@@ -1,0 +1,70 @@
+.wrap {
+  width: 100%;
+  position: relative;
+}
+
+.btn {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 14px;
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.btn::after {
+  content: '';
+  border: solid black;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotateZ(45deg);
+  transition: transform ease 200ms;
+}
+
+.btn[data-opened="true"]::after {
+  transform: rotateZ(-135deg);
+}
+
+.options {
+  max-height: 400px;
+  overflow: hidden;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  position: absolute;
+  width: 100%;
+  text-align: left;
+  animation: options ease 200ms 1 forwards;
+}
+
+.option {
+  padding: 14px;
+  font-size: 18px;
+  display: block;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.option:not([data-active="true"]):hover {
+  background-color: #e6e6e6;
+}
+
+.option:active, .option[data-active="true"] {
+  background-color: #e0ebff;
+}
+
+@keyframes options {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(10px);
+  }
+}
