@@ -12,6 +12,10 @@ export default class Input extends Component {
     this.props.onChange(e.target.value);
   };
 
+  onInput = (e) => {
+    // console.log(e)
+  }
+
   render() {
     const { type, value, suffix, className } = this.props;
 
@@ -22,6 +26,7 @@ export default class Input extends Component {
           className={cx(styles.input, className)}
           value={value}
           onChange={this.onChange}
+          onInput={this.onInput}
         />
         {suffix && <span className={styles.suffix}>{suffix}</span>}
       </div>

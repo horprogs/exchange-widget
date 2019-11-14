@@ -40,6 +40,8 @@
   width: 100%;
   text-align: left;
   animation: options ease 200ms 1 forwards;
+  z-index: 10;
+  background-color: #fff;
 }
 
 .option {
