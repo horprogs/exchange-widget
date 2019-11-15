@@ -1,58 +1,70 @@
-import { POCKETS__CHANGE_POCKET, POCKETS__CHANGE_OPERATION } from '../actionTypes/pockets';
+import {
+  POCKETS__CHANGE_POCKET,
+  POCKETS__CHANGE_OPERATION,
+  POCKETS__CHANGE_AMOUNT,
+} from '../actionTypes/pockets';
+import { RATE__EXCHANGE } from '../actionTypes/rate';
 
-const POCKETS = [
-  {
-    value: 'eur',
-    label: 'EUR',
-    sign: '€',
-  },
-  {
-    value: 'usd',
-    label: 'USD',
-    sign: '$',
-  },
-  {
-    value: 'gbp',
-    label: 'GBP',
-    sign: '£',
-  },
-];
-
-export default function pockets(state = {}, { type, payload }) {
+export default function pockets(state = [], { type, payload }) {
   switch (type) {
     case POCKETS__CHANGE_POCKET: {
-      let active = [...state.active];
-      active[payload.position] = payload.pocketId;
+      const { position, pocketId } = payload;
 
-      // TODO: refactor this
-      if (active[0] === active[1]) {
-        const { value } = POCKETS.find(item => item.value !== payload.pocketId);
+      const newState = [...state];
 
-        if (payload.position === 0) {
-          active = [payload.pocketId, value]
-        } else {
-          active = [value, payload.pocketId]
-        }
+      const currentCurrency = newState[position].currency;
+
+      newState[position].currency = pocketId;
+
+      if (newState[0].currency === newState[1].currency) {
+        newState[1 - position].currency = currentCurrency;
       }
 
-      const operation = {
-        from: active[0],
-        to: active[1],
-      }
-
-      return { ...state, active, operation }
+      return newState;
     }
 
-    case POCKETS__CHANGE_OPERATION:  {
-      const operation = {
-        from: payload.pocketId,
-        to: state.operation.from,
+    case POCKETS__CHANGE_OPERATION: {
+      const { position } = payload;
+
+      const newState = [...state];
+
+      if (position === 0) {
+        newState[0].operationType = 'sender';
+        newState[1].operationType = 'recepient';
+      } else {
+        newState[1].operationType = 'sender';
+        newState[0].operationType = 'recepient';
       }
 
-      return { ...state, operation  }
+      return newState;
+    }
+
+    case POCKETS__CHANGE_AMOUNT: {
+      const { position, amount } = payload;
+
+      const newState = [...state];
+
+      newState[position].fieldValue = amount;
+
+      return newState;
+    }
+
+    case RATE__EXCHANGE: {
+      const { base, to, amount } = payload;
+
+      return state.map((item) => {
+        if (item.currency === to) {
+          return {
+            ...item,
+            fieldValue: amount,
+          };
+        }
+
+        return item;
+      });
     }
 
     default:
-      return state
+      return state;
   }
 }

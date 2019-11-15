@@ -38,18 +38,27 @@ document.addEventListener('DOMContentLoaded', () => {
       balance: [
         {
           id: 'eur',
-          amount: 3000,
+          balance: 3000,
         },
         {
           id: 'usd',
-          amount: 1000,
+          balance: 1000,
         },
         {
           id: 'gbp',
-          amount: 6000,
+          balance: 6000,
         },
       ],
-      active: ['eur', 'usd'],
+      active: [
+        {
+          id: 'eur',
+          amount: 0,
+        },
+        {
+          id: 'usd',
+          amount: 0,
+        }
+      ],
       operation: {
         from: 'eur',
         to: 'usd',
@@ -58,9 +67,39 @@ document.addEventListener('DOMContentLoaded', () => {
     rate: 0.9,
   };
 
+  const q = {
+    balance: [
+      {
+        id: 'eur',
+        amount: 3000,
+      },
+      {
+        id: 'usd',
+        amount: 3000,
+      },
+      {
+        id: 'gbp',
+        amount: 3000,
+      }
+    ],
+    pockets: [
+      {
+        currency: 'eur',
+        operationType: 'sender',
+        fieldValue: 0,
+      },
+      {
+        currency: 'usd',
+        operationType: 'recepient',
+        fieldValue: 0,
+      },
+    ],
+    rate: 0.92,
+  }
+
   const store = createStore(
     reducers,
-    initialState,
+    q,
     composeEnhancers(applyMiddleware(thunk)),
   );
   /* eslint-enable */

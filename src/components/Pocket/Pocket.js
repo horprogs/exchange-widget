@@ -40,32 +40,24 @@ export default class Pocket extends Component {
     let formattedAmount = amount;
 
     if (!isNaN(amount)) {
-      if (amount[0] === '0') {
-        formattedAmount = formattedAmount.slice(1);
-      }
+      // if (amount[0] === '0') {
+      //   formattedAmount = formattedAmount.slice(1);
+      // }
 
       if (formattedAmount.indexOf('.') !== -1) {
         if (
           formattedAmount.slice(formattedAmount.indexOf('.') + 1).length > 2
         ) {
-          this.setState({
-            amount: formattedAmount.slice(
-              0,
-              -(formattedAmount.slice(formattedAmount.indexOf('.')).length - 3),
-            ),
-          });
-
-          this.props.changeOperation(this.props.pocketId);
-
-          return;
+          formattedAmount = formattedAmount.slice(
+            0,
+            -(formattedAmount.slice(formattedAmount.indexOf('.')).length - 3),
+          );
         }
       }
 
-      this.setState({
-        amount: formattedAmount,
-      });
-
-      this.props.changeOperation(this.props.pocketId);
+      this.props.changeAmount(this.props.position, formattedAmount);
+      this.props.exchange(formattedAmount);
+      this.props.changeOperation(this.props.position);
     }
   };
 
@@ -82,9 +74,9 @@ export default class Pocket extends Component {
   }
 
   renderRate() {
-    const { pocketId, operation, rate, recepient } = this.props;
+    const { pocketId, operationType, rate, recepient } = this.props;
 
-    if (operation === 'from') {
+    if (operationType === 'sender') {
       return (
         <div>
           1{this.getPocketSign()} = {rate}
@@ -102,16 +94,16 @@ export default class Pocket extends Component {
   }
 
   render() {
-    const { pocketValue, amount } = this.state;
-    const { pocketId, operation, rate, recepient } = this.props;
-
+    const { pocketValue } = this.state;
+    const { pocketId, operationType, rate, recepient, fieldValue } = this.props;
+    console.log(operationType)
     return (
       <div className={styles.wrap}>
-        {operation === 'from' ? '-' : '+'}
+        {operationType === 'sender' ? '-' : '+'}
         <Input
           suffix={this.getPocketSign()}
           className={styles.input}
-          value={amount}
+          value={fieldValue}
           onChange={this.onChangeAmount}
         />
         <Dropdown
@@ -119,7 +111,7 @@ export default class Pocket extends Component {
           onChange={this.onChangePocket}
           value={pocketId}
         />
-        You have {this.props.amount}
+        You have {this.props.balance}
         <br />
         <br />
         {this.renderRate()}

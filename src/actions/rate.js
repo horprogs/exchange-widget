@@ -3,11 +3,13 @@ import { RATE__GET_RATE, RATE__EXCHANGE } from '../actionTypes/rate';
 export const getRates = () => async (dispatch, getState) => {
   const state = getState();
 
-  const base = state.pockets.operation.from.toUpperCase();
-  const to = state.pockets.operation.to.toUpperCase();
+  const base = state.pockets.find((item) => item.operationType === 'sender')
+    .currency;
+  const to = state.pockets.find((item) => item.operationType === 'recepient')
+    .currency;
 
   const resp = await fetch(
-    `https://api.exchangeratesapi.io/latest?symbols=${to}&base=${base}`,
+    `https://api.exchangeratesapi.io/latest?symbols=${to.toUpperCase()}&base=${base.toUpperCase()}`,
   );
 
   if (resp.ok) {
@@ -23,10 +25,21 @@ export const getRates = () => async (dispatch, getState) => {
 };
 
 export const exchange = (amount) => async (dispatch, getState) => {
+  const state = getState();
+
+  const exchanged = Math.round(amount * state.rate * 100) / 100;
+
+  const base = state.pockets.find((item) => item.operationType === 'sender')
+    .currency;
+  const to = state.pockets.find((item) => item.operationType === 'recepient')
+    .currency;
+
   dispatch({
     type: RATE__EXCHANGE,
     payload: {
-      rate: data.rates[to],
+      amount: exchanged,
+      base,
+      to,
     },
   });
 };
