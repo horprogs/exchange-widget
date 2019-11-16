@@ -40,9 +40,9 @@ export default class Pocket extends Component {
     let formattedAmount = amount;
 
     if (!isNaN(amount)) {
-      // if (amount[0] === '0') {
-      //   formattedAmount = formattedAmount.slice(1);
-      // }
+      if (amount.length === 2 && amount[1] !== '.' && amount[0] === '0') {
+        formattedAmount = formattedAmount.slice(1);
+      }
 
       if (formattedAmount.indexOf('.') !== -1) {
         if (
@@ -56,10 +56,12 @@ export default class Pocket extends Component {
       }
 
       this.props.changeAmount(this.props.position, formattedAmount);
-      this.props.exchange(formattedAmount);
-      this.props.changeOperation(this.props.position);
     }
   };
+
+  onFocusField = () => {
+    this.props.changeOperation(this.props.position);
+  }
 
   getPocketSign() {
     return POCKETS.find((pocket) => pocket.value === this.props.pocketId).sign;
@@ -87,7 +89,7 @@ export default class Pocket extends Component {
 
     return (
       <div>
-        1{this.getPocketSign()} = {1 / rate}
+        1{this.getPocketSign()} = {Number((1 / rate).toFixed(10))}
         {this.getSenderSign()}
       </div>
     );
@@ -95,8 +97,8 @@ export default class Pocket extends Component {
 
   render() {
     const { pocketValue } = this.state;
-    const { pocketId, operationType, rate, recepient, fieldValue } = this.props;
-    console.log(operationType)
+    const { pocketId, operationType, rate, recepient, fieldValue, isRateFetching } = this.props;
+
     return (
       <div className={styles.wrap}>
         {operationType === 'sender' ? '-' : '+'}
@@ -105,6 +107,7 @@ export default class Pocket extends Component {
           className={styles.input}
           value={fieldValue}
           onChange={this.onChangeAmount}
+          onFocus={this.onFocusField}
         />
         <Dropdown
           options={POCKETS}
@@ -114,7 +117,7 @@ export default class Pocket extends Component {
         You have {this.props.balance}
         <br />
         <br />
-        {this.renderRate()}
+        {!isRateFetching && this.renderRate()}
       </div>
     );
   }

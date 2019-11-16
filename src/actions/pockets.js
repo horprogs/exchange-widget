@@ -1,7 +1,7 @@
 import { POCKETS__CHANGE_POCKET, POCKETS__CHANGE_OPERATION, POCKETS__CHANGE_AMOUNT } from '../actionTypes/pockets';
-import { getRates } from './rate';
+import { getExchangeAmount, getRates } from './rate';
 
-export const changePocket = (position, pocketId) => (dispatch) => {
+export const changePocket = (position, pocketId) => (dispatch, getState) => {
   dispatch({
     type: POCKETS__CHANGE_POCKET,
     payload: {
@@ -11,7 +11,8 @@ export const changePocket = (position, pocketId) => (dispatch) => {
   });
 
   dispatch(getRates());
-}
+  // dispatch(getExchangeAmount());
+};
 
 export const changeOperation = (position) => (dispatch) => {
   dispatch({
@@ -20,7 +21,10 @@ export const changeOperation = (position) => (dispatch) => {
       position,
     },
   });
-}
+
+  dispatch(getRates());
+  // dispatch(getExchangeAmount());
+};
 
 export const changeAmount = (position, amount) => (dispatch) => {
   dispatch({
@@ -30,4 +34,6 @@ export const changeAmount = (position, amount) => (dispatch) => {
       amount,
     },
   });
-}
+
+  dispatch(getExchangeAmount());
+};

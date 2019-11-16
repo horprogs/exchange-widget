@@ -8,8 +8,8 @@ export default class Button extends Component {
   }
 
   render() {
-    const { children, type } = this.props;
+    const { children, type, onClick } = this.props;
 
-    return <button type={type} className={styles.wrap}>{children}</button>;
+    return <button type={type} onClick={onClick} className={styles.wrap}>{children}</button>;
   }
 }

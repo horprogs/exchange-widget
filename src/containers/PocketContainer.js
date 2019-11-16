@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { getRates, exchange } from '../actions/rate';
+import { getRates, getExchangeAmount } from '../actions/rate';
 import { changePocket, changeOperation, changeAmount } from '../actions/pockets';
 import Pocket from '../components/Pocket/Pocket';
 
@@ -13,7 +13,6 @@ import Pocket from '../components/Pocket/Pocket';
 //   }
 // }
 const mapStateToProps = (state, props) => {
-  console.log('STATE', state);
   // const pocketId = state.pockets.active[props.position].id;
   // const amount = state.pockets.active[props.position].amount;
   // // const pocket = state.pockets.balance.find((pocket) => pocket.id === pocketId);
@@ -24,13 +23,13 @@ const mapStateToProps = (state, props) => {
   const pocket = state.pockets[props.position];
   const recepient = state.pockets.find(pocket => pocket.operationType === 'recepient').currency;
   const sender = state.pockets.find(pocket => pocket.operationType === 'sender').currency;
-
-  console.log(recepient, sender);
+  const balance = state.balance.find(item => item.id === pocket.currency).amount;
 
   return {
     pocketId: pocket.currency,
-    balance: 0,
-    rate: state.rate,
+    balance,
+    rate: state.rate.value,
+    isRateFetching: state.rate.isFetching,
     position: props.position,
     operationType: pocket.operationType,
     fieldValue: pocket.fieldValue,
@@ -44,7 +43,7 @@ const mapDispatchToProps = {
   changePocket,
   changeOperation,
   changeAmount,
-  exchange,
+  getExchangeAmount,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Pocket);

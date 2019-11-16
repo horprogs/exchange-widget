@@ -32,7 +32,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(jsx?)$/,
         exclude: /node_modules/,
         use: 'babel-loader',
       },
@@ -62,7 +62,7 @@ const config = {
               },
             },
           },
-          postcssConfig
+          postcssConfig,
         ],
       },
       {
@@ -84,6 +84,7 @@ const config = {
       'Access-Control-Allow-Origin': '*',
     },
   },
+  resolve: { extensions: ['.js', '.jsx'] },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebPackPlugin({

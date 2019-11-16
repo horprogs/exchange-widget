@@ -1,11 +1,20 @@
-import { RATE__GET_RATE, RATE__EXCHANGE } from '../actionTypes/rate';
+import {
+  RATE__GET_RATE,
+  RATE__EXCHANGE,
+  RATE__SET_FETCHING,
+} from '../actionTypes/rate';
 
-export default function rate(state = 1, { type, payload }) {
+export default function rate(state = {}, { type, payload }) {
   switch (type) {
-    case RATE__GET_RATE:
-      return payload.rate;
+    case RATE__GET_RATE: {
+      return { ...state, value: payload.rate };
+    }
+
+    case RATE__SET_FETCHING: {
+      return { ...state, isFetching: payload.isFetching };
+    }
 
     default:
-      return state
+      return state;
   }
 }

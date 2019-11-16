@@ -14,14 +14,15 @@ export default class Input extends Component {
 
   onInput = (e) => {
     // console.log(e)
-  }
+  };
 
   render() {
-    const { type, value, suffix, className } = this.props;
+    const { type, value, suffix, className, ...props } = this.props;
 
     return (
       <div>
         <input
+          {...props}
           type={type}
           className={cx(styles.input, className)}
           value={value}

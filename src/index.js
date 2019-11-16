@@ -18,9 +18,9 @@ function render(store) {
     console.error('Root element not found');
   } else {
     ReactDom.hydrate(
-      <AppContainer>
-        <Provider store={store}>
-          <Routes />
+        <AppContainer>
+          <Provider store={store}>
+            <Routes />
         </Provider>
       </AppContainer>,
       app,
@@ -30,42 +30,44 @@ function render(store) {
 
 document.addEventListener('DOMContentLoaded', () => {
   /* eslint-disable no-underscore-dangle */
-  const composeEnhancers =
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-  const initialState = {
-    pockets: {
-      balance: [
-        {
-          id: 'eur',
-          balance: 3000,
-        },
-        {
-          id: 'usd',
-          balance: 1000,
-        },
-        {
-          id: 'gbp',
-          balance: 6000,
-        },
-      ],
-      active: [
-        {
-          id: 'eur',
-          amount: 0,
-        },
-        {
-          id: 'usd',
-          amount: 0,
-        }
-      ],
-      operation: {
-        from: 'eur',
-        to: 'usd',
-      }
-    },
-    rate: 0.9,
-  };
+  // const initialState = {
+  //   pockets: {
+  //     balance: [
+  //       {
+  //         id: 'eur',
+  //         balance: 3000,
+  //       },
+  //       {
+  //         id: 'usd',
+  //         balance: 1000,
+  //       },
+  //       {
+  //         id: 'gbp',
+  //         balance: 6000,
+  //       },
+  //     ],
+  //     active: [
+  //       {
+  //         id: 'eur',
+  //         amount: 0,
+  //       },
+  //       {
+  //         id: 'usd',
+  //         amount: 0,
+  //       },
+  //     ],
+  //     operation: {
+  //       from: 'eur',
+  //       to: 'usd',
+  //     },
+  //   },
+  //   rate: {
+  //     value: 0,
+  //     isFetching: true,
+  //   },
+  // };
 
   const q = {
     balance: [
@@ -80,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
       {
         id: 'gbp',
         amount: 3000,
-      }
+      },
     ],
     pockets: [
       {
@@ -94,15 +96,18 @@ document.addEventListener('DOMContentLoaded', () => {
         fieldValue: 0,
       },
     ],
-    rate: 0.92,
-  }
+    rate: {
+      value: 0,
+      isFetching: true,
+    },
+  };
 
   const store = createStore(
     reducers,
     q,
     composeEnhancers(applyMiddleware(thunk)),
   );
-  /* eslint-enable */
+    /* eslint-enable */
 
   const state = store.getState();
 

@@ -56,26 +56,26 @@ export default class Dropdown extends Component {
     const chosenOption = this.getChosenOption();
 
     return (
-      <div className={styles.wrap} ref={this.optionsRef}>
-        <button
-          className={styles.btn}
-          onClick={this.onClickBtn}
-          data-opened={isOpened}
+        <div className={styles.wrap} ref={this.optionsRef}>
+          <button
+            className={styles.btn}
+            onClick={this.onClickBtn}
+            data-opened={isOpened}
         >
           {chosenOption.label}
         </button>
 
-        {isOpened && (
-          <div className={styles.options}>
-            {options.map((option) => (
-              <div
-                key={option.value}
-                data-value={option.value}
-                className={styles.option}
-                onClick={this.onClickOption}
-                data-active={option.value === chosenOption.value}
+          {isOpened && (
+        <div className={styles.options}>
+              {options.map((option) => (
+                <div
+                  key={option.value}
+                  data-value={option.value}
+                  className={styles.option}
+                  onClick={this.onClickOption}
+                  data-active={option.value === chosenOption.value}
               >
-                {option.label}
+                  {option.label}
               </div>
             ))}
           </div>
