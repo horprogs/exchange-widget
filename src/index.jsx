@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-  const q = {
+  const initialState = {
     balance: [
       {
         id: 'eur',
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const store = createStore(
     reducers,
-    q,
+    initialState,
     composeEnhancers(applyMiddleware(thunk)),
   );
   /* eslint-enable */

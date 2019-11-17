@@ -17,6 +17,7 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "currency.js": "^1.2.2",
+    "identity-obj-proxy": "^3.0.0",
     "immutable": "^4.0.0-rc.12",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
@@ -42,6 +43,8 @@
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.0",
     "css-loader": "^3.2.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
     "eslint": "^6.6.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-google": "^0.9.1",
@@ -60,6 +63,7 @@
     "node-sass": "^4.5.3",
     "postcss-loader": "^2.0.8",
     "prettier": "^1.14.3",
+    "redux-mock-store": "^1.5.3",
     "sass-loader": "^6.0.6",
     "style-loader": "0.23.0",
     "stylelint": "^9.5.0",
@@ -76,10 +80,16 @@
     "browser": true,
     "rootDir": "src",
     "transform": {
-      "^.+\\.js?$": "babel-jest"
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
     },
     "collectCoverageFrom": [
       "src/**/*.js"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
     ],
     "coverageReporters": [
       "text",

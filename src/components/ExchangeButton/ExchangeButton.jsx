@@ -16,5 +16,9 @@ export default function ExchangeButton(props: Props) {
 
   const isDisabled = status === 'disabled';
 
-  return <Button onClick={exchange} disabled={isDisabled}>Exchange</Button>;
+  return (
+    <Button onClick={exchange} disabled={isDisabled} dataTest="btn-exchange">
+      Exchange
+    </Button>
+  );
 }
