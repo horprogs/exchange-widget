@@ -1,16 +1,13 @@
 // @flow
 
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {
-  exchange,
-} from '../actions/balance';
+import { exchange } from '../actions/balance';
 import ExchangeButton from '../components/ExchangeButton/ExchangeButton';
 
-const mapStateToProps = (state, props) => {
-  return {};
-};
+const mapStateToProps = (state) => ({
+  status: state.statuses.exchangeBtn,
+});
 
 const mapDispatchToProps = {
   exchange,

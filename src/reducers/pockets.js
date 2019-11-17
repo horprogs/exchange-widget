@@ -1,11 +1,31 @@
+// @flow
+
 import {
   POCKETS__CHANGE_POCKET,
   POCKETS__CHANGE_OPERATION,
   POCKETS__CHANGE_AMOUNT,
 } from '../actionTypes/pockets';
 import { RATE__EXCHANGE } from '../actionTypes/rate';
+import type { CurrencyId, OperationType } from '../flow-typed/common.types';
 
-export default function pockets(state = [], { type, payload }) {
+type Action = {
+  type: string,
+  payload: {
+    pocketId: CurrencyId,
+    base: CurrencyId,
+    to: CurrencyId,
+    position: number,
+    amount: string,
+  },
+};
+
+type PocketItem = {
+  currency: CurrencyId,
+  operationType: OperationType,
+  fieldValue: string,
+}
+
+export default function pockets(state: Array<PocketItem> = [], { type, payload }: Action) {
   switch (type) {
     case POCKETS__CHANGE_POCKET: {
       const { position, pocketId } = payload;
@@ -30,10 +50,10 @@ export default function pockets(state = [], { type, payload }) {
 
       if (position === 0) {
         newState[0].operationType = 'sender';
-        newState[1].operationType = 'recepient';
+        newState[1].operationType = 'recipient';
       } else {
         newState[1].operationType = 'sender';
-        newState[0].operationType = 'recepient';
+        newState[0].operationType = 'recipient';
       }
 
       return newState;
@@ -50,9 +70,9 @@ export default function pockets(state = [], { type, payload }) {
     }
 
     case RATE__EXCHANGE: {
-      const { base, to, amount } = payload;
+      const { to, amount } = payload;
 
-      return state.map((item) => {
+      return state.map<PocketItem>((item) => {
         if (item.currency === to) {
           return {
             ...item,

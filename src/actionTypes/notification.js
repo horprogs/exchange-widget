@@ -1,0 +1,4 @@
+// @flow
+
+export const NOTIFICATION__SHOW = 'NOTIFICATION__SHOW';
+export const NOTIFICATION__HIDE = 'NOTIFICATION__HIDE';

@@ -6,10 +6,12 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import { createStore, applyMiddleware, compose } from 'redux';
+import 'whatwg-fetch';
+
 import reducers from './reducers';
 
 import './vendor.css';
-import Routes from './Routes';
+import Main from './components/Main/Main';
 
 function render(store) {
   const app = document.getElementById('app');
@@ -18,9 +20,9 @@ function render(store) {
     console.error('Root element not found');
   } else {
     ReactDom.hydrate(
-        <AppContainer>
-          <Provider store={store}>
-            <Routes />
+      <AppContainer>
+        <Provider store={store}>
+          <Main />
         </Provider>
       </AppContainer>,
       app,
@@ -30,44 +32,8 @@ function render(store) {
 
 document.addEventListener('DOMContentLoaded', () => {
   /* eslint-disable no-underscore-dangle */
-  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-  // const initialState = {
-  //   pockets: {
-  //     balance: [
-  //       {
-  //         id: 'eur',
-  //         balance: 3000,
-  //       },
-  //       {
-  //         id: 'usd',
-  //         balance: 1000,
-  //       },
-  //       {
-  //         id: 'gbp',
-  //         balance: 6000,
-  //       },
-  //     ],
-  //     active: [
-  //       {
-  //         id: 'eur',
-  //         amount: 0,
-  //       },
-  //       {
-  //         id: 'usd',
-  //         amount: 0,
-  //       },
-  //     ],
-  //     operation: {
-  //       from: 'eur',
-  //       to: 'usd',
-  //     },
-  //   },
-  //   rate: {
-  //     value: 0,
-  //     isFetching: true,
-  //   },
-  // };
+  const composeEnhancers =
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
   const q = {
     balance: [
@@ -92,13 +58,20 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       {
         currency: 'usd',
-        operationType: 'recepient',
+        operationType: 'recipient',
         fieldValue: 0,
       },
     ],
     rate: {
       value: 0,
       isFetching: true,
+    },
+    notification: {
+      type: null,
+      message: null,
+    },
+    statuses: {
+      exchangeBtn: 'disabled',
     },
   };
 
@@ -107,14 +80,12 @@ document.addEventListener('DOMContentLoaded', () => {
     q,
     composeEnhancers(applyMiddleware(thunk)),
   );
-    /* eslint-enable */
-
-  const state = store.getState();
+  /* eslint-enable */
 
   render(store);
 
   if (module.hot) {
-    module.hot.accept('./Routes.js', () => {
+    module.hot.accept('./components/Main/Main.jsx', () => {
       render(store);
     });
   }

@@ -1,9 +1,28 @@
+// @flow
+
 import React, { Component } from 'react';
 
 import styles from './Rate.css';
+import { POCKETS } from '../../const/common';
 
-export default class Rate extends Component {
-  render() {
-    return <div className={styles.wrap}>123123</div>;
+type Props = {};
+
+export default function Rate(props) {
+  const { recipientSign, senderSign, rate, operationType } = props;
+
+  if (operationType === 'sender') {
+    return (
+      <div>
+        1{senderSign} = {rate}
+        {recipientSign}
+      </div>
+    );
   }
+
+  return (
+    <div>
+      1{recipientSign} = {Number((1 / rate).toFixed(10))}
+      {senderSign}
+    </div>
+  );
 }

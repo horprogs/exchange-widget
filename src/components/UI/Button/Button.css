@@ -1,9 +1,24 @@
 .wrap {
-    background: green;
-    color: #fff;
-    font-size: 14px;
-    padding: 8px 16px;
-    cursor: pointer;
-    margin: 0;
-    outline: none;
+  background: green;
+  color: #fff;
+  cursor: pointer;
+  margin: 0;
+  outline: none;
+  border-radius: 4px;
+  border: 0;
+  font-size: 16px;
+  padding: 12px 22px;
+}
+
+.wrap:disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.wrap:hover {
+  background: #005e00;
+}
+
+.wrap:active {
+  background: #004b00;
 }

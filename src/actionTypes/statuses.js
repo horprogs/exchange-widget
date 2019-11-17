@@ -1,0 +1,3 @@
+// @flow
+
+export const STATUSES__EXCHANGE_BTN = 'STATUSES__EXCHANGE_BTN';

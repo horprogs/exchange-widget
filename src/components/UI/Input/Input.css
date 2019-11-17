@@ -5,7 +5,12 @@
   outline: none;
   box-sizing: border-box;
   font-size: 18px;
-    width: 100%;
+  width: 100%;
+}
+
+.input:focus {
+  box-shadow: 0 0 3px 0 #7dabff;
+  border: 1px solid #7dabff;
 }
 
 .suffix {

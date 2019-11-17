@@ -1,19 +1,27 @@
+// @flow
+
 import React, { Component } from 'react';
 import cx from 'classnames';
 
 import styles from './Input.css';
 
-export default class Input extends Component {
-  defaultProps: {
+type Props = {
+  type: string,
+  onChange: (string) => void,
+  className: string,
+  suffix: string,
+  value: string,
+}
+
+export default class Input extends Component<Props> {
+  static defaultProps = {
     type: 'text',
   };
 
-  onChange = (e) => {
-    this.props.onChange(e.target.value);
-  };
+  onChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
+    const { onChange } = this.props;
 
-  onInput = (e) => {
-    // console.log(e)
+    onChange(e.target.value);
   };
 
   render() {
@@ -27,7 +35,6 @@ export default class Input extends Component {
           className={cx(styles.input, className)}
           value={value}
           onChange={this.onChange}
-          onInput={this.onInput}
         />
         {suffix && <span className={styles.suffix}>{suffix}</span>}
       </div>

@@ -21,7 +21,7 @@ const postcssConfig = {
 const config = {
   mode: devMode ? 'development' : 'production',
   entry: {
-    index: './src/index.js',
+    index: './src/index.jsx',
   },
   devtool: 'source-map',
   output: {

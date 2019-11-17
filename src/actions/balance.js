@@ -1,54 +1,65 @@
+// @flow
+
 import currency from 'currency.js';
+
+import type { Dispatch, GetState } from '../flow-typed/redux.types';
 
 import { BALANCE__EXCHANGE } from '../actionTypes/balance';
 
-import { fetchRatesFromApi, dispatchRate, getExchangeAmount } from './rate';
+import { getRates } from './rate';
+import { showNotification } from './notification';
+import { setStatusExchangeBtn } from './statuses';
 
-export const exchange = () => async (dispatch, getState) => {
-  let state = getState();
+export const exchange = () => async (
+  dispatch: Dispatch,
+  getState: GetState,
+) => {
+  dispatch(setStatusExchangeBtn('disabled'));
 
-  const base = state.pockets
-    .find((item) => item.operationType === 'sender')
-    .currency;
+  try {
+    await dispatch(getRates());
 
-  const to = state.pockets
-    .find((item) => item.operationType === 'recepient')
-    .currency;
+    const state = getState();
 
-  const baseAmount = state.pockets.find(
-    (item) => item.operationType === 'sender',
-  ).fieldValue;
+    const sender = state.pockets.find(
+      (item) => item.operationType === 'sender',
+    );
+    const recipient = state.pockets.find(
+      (item) => item.operationType === 'recipient',
+    );
 
-  const rate = await fetchRatesFromApi(base, to);
-  dispatchRate(dispatch, rate);
+    const base = sender.currency;
+    const receivedAmount = recipient.fieldValue;
+    const sentAmount = sender.fieldValue;
 
-  // dispatch(getExchangeAmount());
+    const balance = state.balance.find((item) => item.id === base).amount;
 
-  state = getState();
+    if (currency(balance).intValue < currency(sentAmount).intValue) {
+      dispatch(
+        showNotification(
+          "You don't have enough money for this operation",
+          'error',
+        ),
+      );
+      return;
+    }
 
-  const receivedAmount = state.pockets.find(
-    (item) => item.operationType === 'recepient',
-  ).fieldValue;
+    dispatch({
+      type: BALANCE__EXCHANGE,
+      payload: {
+        receivedAmount,
+        sentAmount,
+        base,
+        to: recipient.currency,
+      },
+    });
 
-  const sentAmount = state.pockets.find(
-    (item) => item.operationType === 'sender',
-  ).fieldValue;
-
-  const balance = state.balance.find(item => item.id === base).amount;
-
-  if (currency(balance).intValue < currency(sentAmount).intValue) {
-    alert('Your balance is less than amount');
-    return;
+    setTimeout(() => {
+      dispatch(showNotification('Funds successfully transferred'));
+      dispatch(setStatusExchangeBtn('normal'));
+    }, 1000);
+  } catch (e) {
+    dispatch(showNotification('Transfer funds failed. Please try later', 'error'));
+    dispatch(setStatusExchangeBtn('normal'));
   }
-
-
-  dispatch({
-    type: BALANCE__EXCHANGE,
-    payload: {
-      receivedAmount,
-      sentAmount,
-      base,
-      to,
-    },
-  });
 };

@@ -1,0 +1,15 @@
+.wrap {
+  max-width: 580px;
+  margin: 26px auto;
+}
+
+.pockets {
+  display: flex;
+  justify-content: space-between;
+}
+
+.exchange {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}

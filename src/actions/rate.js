@@ -1,39 +1,49 @@
+// @flow
+
 import currency from 'currency.js';
 
-import { RATE__GET_RATE, RATE__EXCHANGE, RATE__SET_FETCHING } from '../actionTypes/rate';
+import type { Dispatch, GetState } from '../flow-typed/redux.types';
 
-export async function fetchRatesFromApi(base, to) {
-  return new Promise(async (resolve, reject) => {
-    const resp = await fetch(
-      `https://api.exchangeratesapi.io/latest?symbols=${to.toUpperCase()}&base=${base.toUpperCase()}`,
-    );
+import {
+  RATE__GET_RATE,
+  RATE__EXCHANGE,
+  RATE__SET_FETCHING,
+} from '../actionTypes/rate';
+import { showNotification } from './notification';
 
-    if (resp.ok) {
-      const data = await resp.json();
+async function fetchRatesFromApi(base: string, to: string) {
+  const resp = await fetch(
+    `https://api.exchangeratesapi.io/latest?symbols=${to.toUpperCase()}&base=${base.toUpperCase()}`,
+  );
 
-      resolve(data.rates[to.toUpperCase()]);
-      return;
+  if (resp.ok) {
+    const data = await resp.json();
+
+    if (typeof data.rates[to.toUpperCase()] !== 'number') {
+      throw new Error('Rate is invalid');
     }
 
-    reject();
-  });
+    return data.rates[to.toUpperCase()];
+  }
+
+  throw new Error('Response is invalid');
 }
 
-export const getExchangeAmount = () => (dispatch, getState) => {
+export const updateExchangeAmount = () => (
+  dispatch: Dispatch,
+  getState: GetState,
+) => {
   const state = getState();
 
-  const amount = state.pockets.find((item) => item.operationType === 'sender')
-    .fieldValue;
+  const sender = state.pockets.find((item) => item.operationType === 'sender');
+  const recipient = state.pockets.find((item) => item.operationType === 'recipient');
 
-  // const exchanged = getFlooredFixed(amount * state.rate.value, 2);
-  const exchanged = (currency(amount).multiply(state.rate.value)).value;
+  const amount = sender.fieldValue;
+  const base = sender.currency;
+  const to = recipient.currency;
 
-  console.log(exchanged, amount, state.rate.value)
+  const exchanged = currency(amount).multiply(state.rate.value).value;
 
-  const base = state.pockets.find((item) => item.operationType === 'sender')
-    .currency;
-  const to = state.pockets.find((item) => item.operationType === 'recepient')
-    .currency;
   dispatch({
     type: RATE__EXCHANGE,
     payload: {
@@ -44,8 +54,8 @@ export const getExchangeAmount = () => (dispatch, getState) => {
   });
 };
 
-
-export function dispatchRate(dispatch, rate) {
+export async function updateRates(dispatch, base, to) {
+  const rate = await fetchRatesFromApi(base, to);
   dispatch({
     type: RATE__GET_RATE,
     payload: {
@@ -53,12 +63,15 @@ export function dispatchRate(dispatch, rate) {
     },
   });
 
-  dispatch(getExchangeAmount());
+  dispatch(updateExchangeAmount());
 }
 
 let timerId;
 
-export const getRates = () => async (dispatch, getState) => {
+export const getRates = () => async (
+  dispatch: Dispatch,
+  getState: GetState,
+) => {
   dispatch({
     type: RATE__SET_FETCHING,
     payload: {
@@ -68,29 +81,44 @@ export const getRates = () => async (dispatch, getState) => {
 
   const state = getState();
 
-  const base = state.pockets
-    .find((item) => item.operationType === 'sender')
+  const base = state.pockets.find((item) => item.operationType === 'sender')
     .currency;
 
-  const to = state.pockets
-    .find((item) => item.operationType === 'recepient')
+  const to = state.pockets.find((item) => item.operationType === 'recipient')
     .currency;
 
   clearInterval(timerId);
 
-  const rate = await fetchRatesFromApi(base, to);
-  dispatchRate(dispatch, rate);
+  try {
+    timerId = setInterval(async () => {
+      try {
+        await updateRates(dispatch, base, to);
+      } catch (e) {
+        dispatch(
+          showNotification(
+            'Cannot fetch exchange rates. Please try later.',
+            'error',
+          ),
+        );
+      }
+    }, 7000);
 
-  timerId = setInterval(async () => {
-    const rate = await fetchRatesFromApi(base, to);
-    dispatchRate(dispatch, rate);
-  }, 10000);
+    await updateRates(dispatch, base, to);
 
-  dispatch({
-    type: RATE__SET_FETCHING,
-    payload: {
-      isFetching: false,
-    },
-  });
+    dispatch({
+      type: RATE__SET_FETCHING,
+      payload: {
+        isFetching: false,
+      },
+    });
+  } catch (e) {
+    dispatch(
+      showNotification(
+        'Cannot fetch exchange rates. Please try later.',
+        'error',
+      ),
+    );
+
+    throw e;
+  }
 };
-

@@ -1,9 +1,24 @@
+// @flow
+
 import React, { Component } from 'react';
 
 import styles from './Dropdown.css';
+import { ReactObjRef } from '../../../flow-typed/common.types';
 
-export default class Dropdown extends Component {
-  constructor(props) {
+type Props = {
+  options: Array<{ label: string, value: string }>,
+  value: string,
+  onChange: (string) => void,
+};
+
+type State = {
+  isOpened: boolean,
+};
+
+export default class Dropdown extends Component<Props, State> {
+  optionsRef: ReactObjRef;
+
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -14,17 +29,22 @@ export default class Dropdown extends Component {
 
   componentDidMount() {
     document.addEventListener('click', this.onClickDocument);
+    // document.addEventListener('keydown', this.onKeydownDocument);
   }
 
   componentWillUnmount() {
     document.removeEventListener('click', this.onClickDocument);
   }
 
-  onClickDocument = (e) => {
+  // onKeydownDocument = (e) => {
+  //   console.log(e);
+  // };
+
+  onClickDocument = (e: MouseEvent) => {
     if (!this.optionsRef.current.contains(e.target)) {
       this.closeOptions();
     }
-  }
+  };
 
   onClickBtn = () => {
     this.setState((prevState) => ({
@@ -32,22 +52,32 @@ export default class Dropdown extends Component {
     }));
   };
 
+  onClickOption = (e: SyntheticMouseEvent<HTMLButtonElement>) => {
+    const { onChange } = this.props;
+
+    const { target } = e;
+
+    if (!(target instanceof HTMLButtonElement)) {
+      return;
+    }
+
+    const { value } = target.dataset;
+
+    onChange(value);
+    this.closeOptions();
+  };
+
+  getChosenOption() {
+    const { options, value } = this.props;
+
+    return options.find((option) => option.value === value) || {};
+  }
+
   closeOptions = () => {
     this.setState({
       isOpened: false,
     });
   };
-
-  onClickOption = (e) => {
-    const { value } = e.target.dataset;
-
-    this.props.onChange(value);
-    this.closeOptions();
-  };
-
-  getChosenOption() {
-    return this.props.options.find(option => option.value === this.props.value);
-  }
 
   render() {
     const { options } = this.props;
@@ -56,27 +86,29 @@ export default class Dropdown extends Component {
     const chosenOption = this.getChosenOption();
 
     return (
-        <div className={styles.wrap} ref={this.optionsRef}>
-          <button
-            className={styles.btn}
-            onClick={this.onClickBtn}
-            data-opened={isOpened}
+      <div className={styles.wrap} ref={this.optionsRef}>
+        <button
+          type="button"
+          className={styles.btn}
+          onClick={this.onClickBtn}
+          data-opened={isOpened}
         >
           {chosenOption.label}
         </button>
 
-          {isOpened && (
-        <div className={styles.options}>
-              {options.map((option) => (
-                <div
-                  key={option.value}
-                  data-value={option.value}
-                  className={styles.option}
-                  onClick={this.onClickOption}
-                  data-active={option.value === chosenOption.value}
+        {isOpened && (
+          <div className={styles.options}>
+            {options.map((option) => (
+              <button
+                type="button"
+                key={option.value}
+                data-value={option.value}
+                className={styles.option}
+                onClick={this.onClickOption}
+                data-active={option.value === chosenOption.value}
               >
-                  {option.label}
-              </div>
+                {option.label}
+              </button>
             ))}
           </div>
         )}

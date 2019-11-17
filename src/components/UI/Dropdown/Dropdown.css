@@ -31,6 +31,11 @@
   transform: rotateZ(-135deg);
 }
 
+.btn[data-opened="true"] {
+  box-shadow: 0 0 3px 0 #7dabff;
+  border: 1px solid #7dabff;
+}
+
 .options {
   max-height: 400px;
   overflow: hidden;
@@ -51,6 +56,10 @@
   cursor: pointer;
   width: 100%;
   box-sizing: border-box;
+  background-color: transparent;
+  outline: none;
+  border: 0;
+  text-align: left;
 }
 
 .option:not([data-active="true"]):hover {

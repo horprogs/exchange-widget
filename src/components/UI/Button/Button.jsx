@@ -1,15 +1,28 @@
-import React, { Component } from 'react';
+// @flow
+
+import React from 'react';
 
 import styles from './Button.css';
 
-export default class Button extends Component {
-  defaultProps: {
-    type: 'button'
-  }
+type Props = {
+  type?: string,
+  children: any,
+  onClick: () => void,
+  disabled?: boolean,
+};
 
-  render() {
-    const { children, type, onClick } = this.props;
+export default function Button(props: Props) {
+  const { children, type, onClick, disabled } = props;
 
-    return <button type={type} onClick={onClick} className={styles.wrap}>{children}</button>;
-  }
+  return (
+    // eslint-disable-next-line react/button-has-type
+    <button type={type} onClick={onClick} disabled={disabled} className={styles.wrap}>
+      {children}
+    </button>
+  );
 }
+
+Button.defaultProps = {
+  type: 'button',
+  disabled: false,
+};

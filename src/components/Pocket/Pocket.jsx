@@ -1,111 +1,97 @@
+// @flow
+
 import React, { Component } from 'react';
 
 import Input from '../UI/Input/Input';
 import Dropdown from '../UI/Dropdown/Dropdown';
+import BalanceContainer from '../../containers/BalanceContainer';
+import RateContainer from '../../containers/RateContainer';
+
+import { POCKETS } from '../../const/common';
 
 import styles from './Pocket.css';
+import type { CurrencyId, OperationType } from '../../flow-typed/common.types';
 
-const POCKETS = [
-  {
-    value: 'eur',
-    label: 'EUR',
-    sign: '€',
-  },
-  {
-    value: 'usd',
-    label: 'USD',
-    sign: '$',
-  },
-  {
-    value: 'gbp',
-    label: 'GBP',
-    sign: '£',
-  },
-];
+type Props = {
+  changePocket: (number, CurrencyId) => void,
+  changeAmount: (number, string) => void,
+  changeOperation: (number) => void,
+  position: number,
+  pocketId: CurrencyId,
+  operationType: OperationType,
+  fieldValue: number,
+  isRateFetching: boolean,
+};
 
-export default class Pocket extends Component {
-  constructor() {
-    super();
+export default class Pocket extends Component<Props> {
+  onChangePocket = (pocketId: CurrencyId) => {
+    const { changePocket, position } = this.props;
 
-    this.state = {
-      amount: 0,
-    };
-  }
-
-  onChangePocket = (pocketValue) => {
-    this.props.changePocket(this.props.position, pocketValue);
+    changePocket(position, pocketId);
   };
 
-  onChangeAmount = (amount) => {
-    let formattedAmount = amount;
+  onChangeAmount = (amount: string) => {
+    const { changeAmount, position } = this.props;
+    let formattedAmount = amount.trim();
 
-    if (!isNaN(amount)) {
-      if (amount.length === 2 && amount[1] !== '.' && amount[0] === '0') {
-        formattedAmount = formattedAmount.slice(1);
-      }
-
-      if (formattedAmount.indexOf('.') !== -1) {
-        if (
-          formattedAmount.slice(formattedAmount.indexOf('.') + 1).length > 2
-        ) {
-          formattedAmount = formattedAmount.slice(
-            0,
-            -(formattedAmount.slice(formattedAmount.indexOf('.')).length - 3),
-          );
-        }
-      }
-
-      this.props.changeAmount(this.props.position, formattedAmount);
+    if (Number.isNaN(Number(amount))) {
+      return;
     }
+
+    // eslint-disable-next-line
+    const trailingZero =
+      amount.length === 2 && amount[1] !== '.' && amount[0] === '0';
+
+    if (trailingZero || amount[0] === '-') {
+      formattedAmount = formattedAmount.slice(1);
+    }
+
+    const dotIndex = formattedAmount.indexOf('.');
+
+    if (dotIndex !== -1) {
+      if (formattedAmount.slice(dotIndex + 1).length > 2) {
+        formattedAmount = formattedAmount.slice(
+          0,
+          -(formattedAmount.slice(dotIndex).length - 3),
+        );
+      }
+    }
+    changeAmount(position, formattedAmount);
   };
 
   onFocusField = () => {
-    this.props.changeOperation(this.props.position);
-  }
+    const { changeOperation, position } = this.props;
+
+    changeOperation(position);
+  };
 
   getPocketSign() {
-    return POCKETS.find((pocket) => pocket.value === this.props.pocketId).sign;
+    const { pocketId } = this.props;
+
+    return POCKETS.find((pocket) => pocket.value === pocketId).sign;
   }
 
-  getRecepientSign() {
-    return POCKETS.find((pocket) => pocket.value === this.props.recepient).sign;
-  }
-
-  getSenderSign() {
-    return POCKETS.find((pocket) => pocket.value === this.props.sender).sign;
-  }
-
-  renderRate() {
-    const { pocketId, operationType, rate, recepient } = this.props;
+  renderOperationSign() {
+    const { operationType } = this.props;
 
     if (operationType === 'sender') {
-      return (
-        <div>
-          1{this.getPocketSign()} = {rate}
-          {this.getRecepientSign()}
-        </div>
-      );
+      return <div className={styles.operationSender}>-</div>;
     }
 
-    return (
-      <div>
-        1{this.getPocketSign()} = {Number((1 / rate).toFixed(10))}
-        {this.getSenderSign()}
-      </div>
-    );
+    return <div className={styles.operationRecipient}>+</div>;
   }
 
   render() {
-    const { pocketValue } = this.state;
-    const { pocketId, operationType, rate, recepient, fieldValue, isRateFetching } = this.props;
+    const { pocketId, fieldValue, isRateFetching, operationType } = this.props;
 
     return (
       <div className={styles.wrap}>
-        {operationType === 'sender' ? '-' : '+'}
+        {this.renderOperationSign()}
+
         <Input
           suffix={this.getPocketSign()}
           className={styles.input}
-          value={fieldValue}
+          value={String(fieldValue)}
           onChange={this.onChangeAmount}
           onFocus={this.onFocusField}
         />
@@ -114,10 +100,12 @@ export default class Pocket extends Component {
           onChange={this.onChangePocket}
           value={pocketId}
         />
-        You have {this.props.balance}
-        <br />
-        <br />
-        {!isRateFetching && this.renderRate()}
+
+        <BalanceContainer pocketId={pocketId} />
+
+        <div className={styles.rate}>
+          {!isRateFetching && <RateContainer operationType={operationType} />}
+        </div>
       </div>
     );
   }

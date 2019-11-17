@@ -1,0 +1,28 @@
+.wrap {
+  background: #2c2c2c;
+  padding: 16px 0;
+  border-radius: 4px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  margin: auto;
+  color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  max-width: 400px;
+  text-align: center;
+  animation: wrap ease 300ms 1 forwards;
+}
+
+.error {
+  background-color: darkred;
+}
+
+@keyframes wrap {
+  0% {
+    bottom: -50px;
+  }
+
+  100% {
+    bottom: 16px;
+  }
+}
