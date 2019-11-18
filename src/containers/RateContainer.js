@@ -2,16 +2,16 @@
 
 import { connect } from 'react-redux';
 
-import { POCKETS } from '../const/common';
+import { POCKETS, RECIPIENT, SENDER } from '../const/common';
 
 import Rate from '../components/Rate/Rate';
 
 const mapStateToProps = (state, props) => {
   const recipient = state.pockets.find(
-    (item) => item.operationType === 'recipient',
+    (item) => item.operationType === RECIPIENT,
   ).currency;
 
-  const sender = state.pockets.find((item) => item.operationType === 'sender')
+  const sender = state.pockets.find((item) => item.operationType === SENDER)
     .currency;
 
   const recipientSign = POCKETS.find((pocket) => pocket.value === recipient).sign;

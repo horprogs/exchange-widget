@@ -7,6 +7,7 @@ import {
 } from '../actionTypes/pockets';
 import { RATE__EXCHANGE } from '../actionTypes/rate';
 import type { CurrencyId, OperationType } from '../flow-typed/common.types';
+import { RECIPIENT, SENDER } from '../const/common';
 
 type Action = {
   type: string,
@@ -49,11 +50,11 @@ export default function pockets(state: Array<PocketItem> = [], { type, payload }
       const newState = [...state];
 
       if (position === 0) {
-        newState[0].operationType = 'sender';
-        newState[1].operationType = 'recipient';
+        newState[0].operationType = SENDER;
+        newState[1].operationType = RECIPIENT;
       } else {
-        newState[1].operationType = 'sender';
-        newState[0].operationType = 'recipient';
+        newState[1].operationType = SENDER;
+        newState[0].operationType = RECIPIENT;
       }
 
       return newState;

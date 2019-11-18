@@ -7,10 +7,12 @@ import {
   POCKETS__CHANGE_OPERATION,
   POCKETS__CHANGE_AMOUNT,
 } from '../actionTypes/pockets';
-import { updateExchangeAmount, getRates } from './rate';
+import { updateExchangeAmount, updateRates } from './rate';
 import type { CurrencyId } from '../flow-typed/common.types';
 import type { Dispatch } from '../flow-typed/redux.types';
 import { setStatusExchangeBtn } from './statuses';
+import { DISABLED, NORMAL } from '../const/common';
+import { showNotification } from './notification';
 
 export const changePocket = (position: number, pocketId: CurrencyId) => async (
   dispatch: Dispatch,
@@ -24,8 +26,15 @@ export const changePocket = (position: number, pocketId: CurrencyId) => async (
   });
 
   try {
-    await dispatch(getRates());
-  } catch (e) {}
+    await dispatch(updateRates());
+  } catch (e) {
+    dispatch(
+      showNotification(
+        'Cannot fetch exchange rates. Please try later.',
+        'error',
+      ),
+    );
+  }
 };
 
 export const changeOperation = (position: number) => async (
@@ -39,8 +48,15 @@ export const changeOperation = (position: number) => async (
   });
 
   try {
-    await dispatch(getRates());
-  } catch (e) {}
+    await dispatch(updateRates());
+  } catch (e) {
+    dispatch(
+      showNotification(
+        'Cannot fetch exchange rates. Please try later.',
+        'error',
+      ),
+    );
+  }
 };
 
 export const changeAmount = (position: number, amount: string) => (
@@ -55,9 +71,9 @@ export const changeAmount = (position: number, amount: string) => (
   });
 
   if (currency(amount).value === 0) {
-    dispatch(setStatusExchangeBtn('disabled'));
+    dispatch(setStatusExchangeBtn(DISABLED));
   } else {
-    dispatch(setStatusExchangeBtn('normal'));
+    dispatch(setStatusExchangeBtn(NORMAL));
   }
 
   dispatch(updateExchangeAmount());

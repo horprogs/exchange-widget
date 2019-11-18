@@ -12,6 +12,7 @@ import reducers from './reducers';
 
 import './vendor.css';
 import Main from './components/Main/Main';
+import { DISABLED, RECIPIENT, SENDER } from './const/common';
 
 function render(store) {
   const app = document.getElementById('app');
@@ -31,7 +32,7 @@ function render(store) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  /* eslint-disable no-underscore-dangle */
+  // eslint-disable-next-line no-underscore-dangle, operator-linebreak
   const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -53,12 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
     pockets: [
       {
         currency: 'eur',
-        operationType: 'sender',
+        operationType: SENDER,
         fieldValue: 0,
       },
       {
         currency: 'usd',
-        operationType: 'recipient',
+        operationType: RECIPIENT,
         fieldValue: 0,
       },
     ],
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       message: null,
     },
     statuses: {
-      exchangeBtn: 'disabled',
+      exchangeBtn: DISABLED,
     },
   };
 
@@ -84,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   render(store);
 
+  // $FlowExpectedError
   if (module.hot) {
     module.hot.accept('./components/Main/Main.jsx', () => {
       render(store);

@@ -1,10 +1,10 @@
 // @flow
 
-import React, { Component } from 'react';
+import React from 'react';
 
 import Button from '../UI/Button/Button';
 
-import styles from './ExchangeButton.css';
+import { DISABLED } from '../../const/common';
 
 type Props = {
   exchange: () => void,
@@ -14,7 +14,7 @@ type Props = {
 export default function ExchangeButton(props: Props) {
   const { exchange, status } = props;
 
-  const isDisabled = status === 'disabled';
+  const isDisabled = status === DISABLED;
 
   return (
     <Button onClick={exchange} disabled={isDisabled} dataTest="btn-exchange">

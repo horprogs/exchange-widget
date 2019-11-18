@@ -13,6 +13,6 @@ export default function Balance(props: Props) {
   const { amount, sign } = props;
 
   return (
-    <div className={styles.wrap}>You have {amount}{sign}</div>
+    <div className={styles.wrap} data-test="balance">You have {amount}{sign}</div>
   );
 }

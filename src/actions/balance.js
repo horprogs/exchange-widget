@@ -6,26 +6,27 @@ import type { Dispatch, GetState } from '../flow-typed/redux.types';
 
 import { BALANCE__EXCHANGE } from '../actionTypes/balance';
 
-import { getRates } from './rate';
+import { updateRates } from './rate';
 import { showNotification } from './notification';
 import { setStatusExchangeBtn } from './statuses';
+import { DISABLED, NORMAL, RECIPIENT, SENDER } from '../const/common';
 
 export const exchange = () => async (
   dispatch: Dispatch,
   getState: GetState,
 ) => {
-  dispatch(setStatusExchangeBtn('disabled'));
+  dispatch(setStatusExchangeBtn(DISABLED));
 
   try {
-    await dispatch(getRates());
+    await dispatch(updateRates());
 
     const state = getState();
 
     const sender = state.pockets.find(
-      (item) => item.operationType === 'sender',
+      (item) => item.operationType === SENDER,
     );
     const recipient = state.pockets.find(
-      (item) => item.operationType === 'recipient',
+      (item) => item.operationType === RECIPIENT,
     );
 
     const base = sender.currency;
@@ -56,10 +57,10 @@ export const exchange = () => async (
 
     setTimeout(() => {
       dispatch(showNotification('Funds successfully transferred'));
-      dispatch(setStatusExchangeBtn('normal'));
+      dispatch(setStatusExchangeBtn(NORMAL));
     }, 1000);
   } catch (e) {
     dispatch(showNotification('Transfer funds failed. Please try later', 'error'));
-    dispatch(setStatusExchangeBtn('normal'));
+    dispatch(setStatusExchangeBtn(NORMAL));
   }
 };

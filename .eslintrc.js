@@ -20,6 +20,11 @@ module.exports = {
     document: true,
     fetch: true,
     MouseEvent: true,
+    jest: true,
+    it: true,
+    describe: true,
+    expect: true,
+    beforeEach: true,
   },
 
   rules: {

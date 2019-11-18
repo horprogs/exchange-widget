@@ -1,7 +1,6 @@
 // @flow
 
 import { RATE__GET_RATE, RATE__SET_FETCHING } from '../actionTypes/rate';
-import type { CurrencyId, OperationType } from '../flow-typed/common.types';
 
 type Action = {
   type: string,

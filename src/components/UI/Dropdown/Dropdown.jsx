@@ -2,6 +2,8 @@
 
 import React, { Component } from 'react';
 
+import DropdownOptions from './DropdownOptions';
+
 import styles from './Dropdown.css';
 import { ReactObjRef } from '../../../flow-typed/common.types';
 
@@ -27,44 +29,17 @@ export default class Dropdown extends Component<Props, State> {
     this.optionsRef = React.createRef();
   }
 
-  componentDidMount() {
-    document.addEventListener('click', this.onClickDocument);
-    // document.addEventListener('keydown', this.onKeydownDocument);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.onClickDocument);
-  }
-
-  // onKeydownDocument = (e) => {
-  //   console.log(e);
-  // };
-
-  onClickDocument = (e: MouseEvent) => {
-    if (!this.optionsRef.current.contains(e.target)) {
-      this.closeOptions();
-    }
-  };
-
   onClickBtn = () => {
     this.setState((prevState) => ({
       isOpened: !prevState.isOpened,
     }));
   };
 
-  onClickOption = (e: SyntheticMouseEvent<HTMLButtonElement>) => {
+  onChange = (value: string) => {
     const { onChange } = this.props;
 
-    const { target } = e;
-
-    if (!(target instanceof HTMLButtonElement)) {
-      return;
-    }
-
-    const { value } = target.dataset;
-
-    onChange(value);
     this.closeOptions();
+    onChange(value);
   };
 
   getChosenOption() {
@@ -80,13 +55,13 @@ export default class Dropdown extends Component<Props, State> {
   };
 
   render() {
-    const { options } = this.props;
+    const { options, value } = this.props;
     const { isOpened } = this.state;
 
     const chosenOption = this.getChosenOption();
 
     return (
-      <div className={styles.wrap} ref={this.optionsRef}>
+      <div className={styles.wrap}>
         <button
           type="button"
           className={styles.btn}
@@ -97,20 +72,12 @@ export default class Dropdown extends Component<Props, State> {
         </button>
 
         {isOpened && (
-          <div className={styles.options}>
-            {options.map((option) => (
-              <button
-                type="button"
-                key={option.value}
-                data-value={option.value}
-                className={styles.option}
-                onClick={this.onClickOption}
-                data-active={option.value === chosenOption.value}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
+          <DropdownOptions
+            options={options}
+            value={value}
+            onChange={this.onChange}
+            onClose={this.closeOptions}
+          />
         )}
       </div>
     );

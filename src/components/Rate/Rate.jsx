@@ -1,16 +1,21 @@
 // @flow
 
-import React, { Component } from 'react';
+import React from 'react';
 
-import styles from './Rate.css';
-import { POCKETS } from '../../const/common';
+import { SENDER } from '../../const/common';
+import type { OperationType } from '../../flow-typed/common.types';
 
-type Props = {};
+type Props = {
+  recipientSign: string,
+  senderSign: string,
+  rate: number,
+  operationType: OperationType,
+};
 
-export default function Rate(props) {
+export default function Rate(props: Props) {
   const { recipientSign, senderSign, rate, operationType } = props;
 
-  if (operationType === 'sender') {
+  if (operationType === SENDER) {
     return (
       <div>
         1{senderSign} = {rate}

@@ -11,6 +11,9 @@ import {
 } from '../actionTypes/rate';
 import { showNotification } from './notification';
 
+import { RECIPIENT, SENDER, FETCH_RATES_INTERVAL } from '../const/common';
+import type { CurrencyId } from '../flow-typed/common.types';
+
 async function fetchRatesFromApi(base: string, to: string) {
   const resp = await fetch(
     `https://api.exchangeratesapi.io/latest?symbols=${to.toUpperCase()}&base=${base.toUpperCase()}`,
@@ -35,8 +38,10 @@ export const updateExchangeAmount = () => (
 ) => {
   const state = getState();
 
-  const sender = state.pockets.find((item) => item.operationType === 'sender');
-  const recipient = state.pockets.find((item) => item.operationType === 'recipient');
+  const sender = state.pockets.find((item) => item.operationType === SENDER);
+  const recipient = state.pockets.find(
+    (item) => item.operationType === RECIPIENT,
+  );
 
   const amount = sender.fieldValue;
   const base = sender.currency;
@@ -54,7 +59,7 @@ export const updateExchangeAmount = () => (
   });
 };
 
-export async function updateRates(dispatch, base, to) {
+async function getRates(dispatch: Dispatch, base: CurrencyId, to: CurrencyId) {
   const rate = await fetchRatesFromApi(base, to);
   dispatch({
     type: RATE__GET_RATE,
@@ -62,13 +67,11 @@ export async function updateRates(dispatch, base, to) {
       rate,
     },
   });
-
-  dispatch(updateExchangeAmount());
 }
 
 let timerId;
 
-export const getRates = () => async (
+export const updateRates = () => async (
   dispatch: Dispatch,
   getState: GetState,
 ) => {
@@ -81,44 +84,35 @@ export const getRates = () => async (
 
   const state = getState();
 
-  const base = state.pockets.find((item) => item.operationType === 'sender')
+  const base = state.pockets.find((item) => item.operationType === SENDER)
     .currency;
 
-  const to = state.pockets.find((item) => item.operationType === 'recipient')
+  const to = state.pockets.find((item) => item.operationType === RECIPIENT)
     .currency;
 
   clearInterval(timerId);
 
-  try {
-    timerId = setInterval(async () => {
-      try {
-        await updateRates(dispatch, base, to);
-      } catch (e) {
-        dispatch(
-          showNotification(
-            'Cannot fetch exchange rates. Please try later.',
-            'error',
-          ),
-        );
-      }
-    }, 7000);
+  timerId = setInterval(async () => {
+    try {
+      await getRates(dispatch, base, to);
+      dispatch(updateExchangeAmount());
+    } catch (e) {
+      dispatch(
+        showNotification(
+          'Cannot fetch exchange rates. Please try later.',
+          'error',
+        ),
+      );
+    }
+  }, FETCH_RATES_INTERVAL);
 
-    await updateRates(dispatch, base, to);
+  await getRates(dispatch, base, to);
+  dispatch(updateExchangeAmount());
 
-    dispatch({
-      type: RATE__SET_FETCHING,
-      payload: {
-        isFetching: false,
-      },
-    });
-  } catch (e) {
-    dispatch(
-      showNotification(
-        'Cannot fetch exchange rates. Please try later.',
-        'error',
-      ),
-    );
-
-    throw e;
-  }
+  dispatch({
+    type: RATE__SET_FETCHING,
+    payload: {
+      isFetching: false,
+    },
+  });
 };

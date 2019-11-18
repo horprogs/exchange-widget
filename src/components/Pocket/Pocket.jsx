@@ -7,7 +7,7 @@ import Dropdown from '../UI/Dropdown/Dropdown';
 import BalanceContainer from '../../containers/BalanceContainer';
 import RateContainer from '../../containers/RateContainer';
 
-import { POCKETS } from '../../const/common';
+import { POCKETS, SENDER } from '../../const/common';
 
 import styles from './Pocket.css';
 import type { CurrencyId, OperationType } from '../../flow-typed/common.types';
@@ -74,7 +74,7 @@ export default class Pocket extends Component<Props> {
   renderOperationSign() {
     const { operationType } = this.props;
 
-    if (operationType === 'sender') {
+    if (operationType === SENDER) {
       return <div className={styles.operationSender}>-</div>;
     }
 
