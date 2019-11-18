@@ -9,13 +9,13 @@ import { BALANCE__EXCHANGE } from '../actionTypes/balance';
 import { updateRates } from './rate';
 import { showNotification } from './notification';
 import { setStatusExchangeBtn } from './statuses';
-import { DISABLED, NORMAL, RECIPIENT, SENDER } from '../const/common';
+import { NORMAL, RECIPIENT, SENDER, LOADING } from '../const/common';
 
 export const exchange = () => async (
   dispatch: Dispatch,
   getState: GetState,
 ) => {
-  dispatch(setStatusExchangeBtn(DISABLED));
+  dispatch(setStatusExchangeBtn(LOADING));
 
   try {
     await dispatch(updateRates());
@@ -42,6 +42,8 @@ export const exchange = () => async (
           'error',
         ),
       );
+
+      dispatch(setStatusExchangeBtn(NORMAL));
       return;
     }
 

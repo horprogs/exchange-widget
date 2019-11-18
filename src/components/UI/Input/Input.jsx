@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import cx from 'classnames';
 
 import styles from './Input.css';
+import type { ReactObjRef } from '../../../flow-typed/common.types';
 
 type Props = {
   type?: string,
@@ -16,9 +17,21 @@ type Props = {
 }
 
 export default class Input extends Component<Props> {
+  inputRef: ReactObjRef;
+
   static defaultProps = {
     type: 'text',
   };
+
+  constructor() {
+    super();
+
+    this.inputRef = React.createRef();
+  }
+
+  setFocus() {
+    this.inputRef.current.focus();
+  }
 
   onChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
     const { onChange } = this.props;
@@ -37,6 +50,7 @@ export default class Input extends Component<Props> {
           value={value}
           onChange={this.onChange}
           onFocus={onFocus}
+          ref={this.inputRef}
         />
         {suffix && <span className={styles.suffix}>{suffix}</span>}
       </div>

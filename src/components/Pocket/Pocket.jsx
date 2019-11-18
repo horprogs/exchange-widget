@@ -10,7 +10,7 @@ import RateContainer from '../../containers/RateContainer';
 import { POCKETS, SENDER } from '../../const/common';
 
 import styles from './Pocket.css';
-import type { CurrencyId, OperationType } from '../../flow-typed/common.types';
+import type { CurrencyId, OperationType, ReactObjRef } from '../../flow-typed/common.types';
 
 type Props = {
   changePocket: (number, CurrencyId) => void,
@@ -24,6 +24,22 @@ type Props = {
 };
 
 export default class Pocket extends Component<Props> {
+  inputRef: ReactObjRef;
+
+  constructor() {
+    super();
+
+    this.inputRef = React.createRef();
+  }
+
+  componentDidMount() {
+    const { operationType } = this.props;
+
+    if (operationType === SENDER) {
+      this.inputRef.current.setFocus();
+    }
+  }
+
   onChangePocket = (pocketId: CurrencyId) => {
     const { changePocket, position } = this.props;
 
@@ -75,10 +91,20 @@ export default class Pocket extends Component<Props> {
     const { operationType } = this.props;
 
     if (operationType === SENDER) {
-      return <div className={styles.operationSender}>-</div>;
+      return (
+        <>
+          <div className={styles.operationSender}>-</div>
+          <div className={styles.operationLabel}>From</div>
+        </>
+      );
     }
 
-    return <div className={styles.operationRecipient}>+</div>;
+    return (
+      <>
+        <div className={styles.operationRecipient}>+</div>
+        <div className={styles.operationLabel}>To</div>
+      </>
+    );
   }
 
   render() {
@@ -94,6 +120,7 @@ export default class Pocket extends Component<Props> {
           value={String(fieldValue)}
           onChange={this.onChangeAmount}
           onFocus={this.onFocusField}
+          ref={this.inputRef}
         />
         <Dropdown
           options={POCKETS}

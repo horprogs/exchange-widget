@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const devMode = process.env.NODE_ENV !== 'production';
 
@@ -26,7 +27,7 @@ const config = {
   devtool: 'source-map',
   output: {
     path: path.resolve('dist'),
-    filename: '[name].js',
+    filename: '[name].[hash].js',
     sourceMapFilename: '[file].map',
   },
   module: {
@@ -56,7 +57,6 @@ const config = {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
               modules: {
                 localIdentName: '[name]_[local]__[hash:base64:5]',
               },
@@ -66,7 +66,7 @@ const config = {
         ],
       },
       {
-        test: /\.(png|gif|jpe?g)/,
+        test: /\.(png|gif|jpe?g|svg)/,
         loader: 'file-loader',
         options: {
           name: 'img/[name].[hash:6].[ext]',
@@ -93,6 +93,7 @@ const config = {
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
+    new CleanWebpackPlugin(),
   ],
 };
 

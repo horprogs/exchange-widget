@@ -16,6 +16,7 @@ export const POCKETS = [
   },
 ];
 
+export const LOADING = 'loading';
 export const DISABLED = 'disabled';
 export const NORMAL = 'NORMAL';
 

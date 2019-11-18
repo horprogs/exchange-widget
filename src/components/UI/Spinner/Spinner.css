@@ -1,0 +1,6 @@
+.wrap {
+  width: 24px;
+  height: 24px;
+  margin: auto;
+  background: transparent url("./icons/loader.svg") no-repeat center / cover;
+}

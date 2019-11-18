@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import currency from 'currency.js';
 
 import { SENDER } from '../../const/common';
 import type { OperationType } from '../../flow-typed/common.types';
@@ -18,7 +19,7 @@ export default function Rate(props: Props) {
   if (operationType === SENDER) {
     return (
       <div>
-        1{senderSign} = {rate}
+        1{senderSign} = {currency(rate).value}
         {recipientSign}
       </div>
     );
@@ -26,7 +27,7 @@ export default function Rate(props: Props) {
 
   return (
     <div>
-      1{recipientSign} = {Number((1 / rate).toFixed(10))}
+      1{recipientSign} = {currency(1).divide(rate).value}
       {senderSign}
     </div>
   );
