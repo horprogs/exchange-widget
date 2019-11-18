@@ -26,7 +26,7 @@ export default function balance(
       const { base, to, sentAmount, receivedAmount } = payload;
       return state.map<BalanceItem>((item) => {
         if (item.id === base) {
-          return {
+          return item.merge() {
             ...item,
             amount: currency(item.amount).subtract(sentAmount).value,
           };

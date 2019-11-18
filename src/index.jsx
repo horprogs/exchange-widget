@@ -6,6 +6,7 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import { createStore, applyMiddleware, compose } from 'redux';
+import { fromJS } from 'immutable';
 import 'whatwg-fetch';
 
 import reducers from './reducers';
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-  const initialState = {
+  const initialState = fromJS({
     balance: [
       {
         id: 'eur',
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     statuses: {
       exchangeBtn: DISABLED,
     },
-  };
+  });
 
   const store = createStore(
     reducers,

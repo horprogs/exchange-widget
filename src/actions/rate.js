@@ -38,16 +38,16 @@ export const updateExchangeAmount = () => (
 ) => {
   const state = getState();
 
-  const sender = state.pockets.find((item) => item.operationType === SENDER);
-  const recipient = state.pockets.find(
-    (item) => item.operationType === RECIPIENT,
+  const sender = state.get('pockets').find((item) => item.get('operationType') === SENDER);
+  const recipient = state.get('pockets').find(
+    (item) => item.get('operationType') === RECIPIENT,
   );
 
-  const amount = sender.fieldValue;
-  const base = sender.currency;
-  const to = recipient.currency;
+  const amount = sender.get('fieldValue');
+  const base = sender.get('currency');
+  const to = recipient.get('currency');
 
-  const exchanged = currency(amount).multiply(state.rate.value).value;
+  const exchanged = currency(amount).multiply(state.getIn(['rate', 'value'])).value;
 
   dispatch({
     type: RATE__EXCHANGE,
@@ -84,10 +84,10 @@ export const updateRates = () => async (
 
   const state = getState();
 
-  const base = state.pockets.find((item) => item.operationType === SENDER)
+  const base = state.get('pockets').find((item) => item.get('operationType') === SENDER)
     .currency;
 
-  const to = state.pockets.find((item) => item.operationType === RECIPIENT)
+  const to = state.get('pockets').find((item) => item.get('operationType') === RECIPIENT)
     .currency;
 
   clearInterval(timerId);

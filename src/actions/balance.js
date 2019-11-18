@@ -22,18 +22,18 @@ export const exchange = () => async (
 
     const state = getState();
 
-    const sender = state.pockets.find(
-      (item) => item.operationType === SENDER,
+    const sender = state.get('pockets').find(
+      (item) => item.get('operationType') === SENDER,
     );
-    const recipient = state.pockets.find(
-      (item) => item.operationType === RECIPIENT,
+    const recipient = state.get('pockets').find(
+      (item) => item.get('operationType') === RECIPIENT,
     );
 
-    const base = sender.currency;
-    const receivedAmount = recipient.fieldValue;
-    const sentAmount = sender.fieldValue;
+    const base = sender.get('currency');
+    const receivedAmount = recipient.get('fieldValue');
+    const sentAmount = sender.get('fieldValue');
 
-    const balance = state.balance.find((item) => item.id === base).amount;
+    const balance = state.get('balance').find((item) => item.get('id') === base).get('amount');
 
     if (currency(balance).intValue < currency(sentAmount).intValue) {
       dispatch(
@@ -47,17 +47,16 @@ export const exchange = () => async (
       return;
     }
 
-    dispatch({
-      type: BALANCE__EXCHANGE,
-      payload: {
-        receivedAmount,
-        sentAmount,
-        base,
-        to: recipient.currency,
-      },
-    });
-
     setTimeout(() => {
+      dispatch({
+        type: BALANCE__EXCHANGE,
+        payload: {
+          receivedAmount,
+          sentAmount,
+          base,
+          to: recipient.get('currency'),
+        },
+      });
       dispatch(showNotification('Funds successfully transferred'));
       dispatch(setStatusExchangeBtn(NORMAL));
     }, 1000);
