@@ -11,7 +11,7 @@ import {
 } from '../actionTypes/rate';
 import { showNotification } from './notification';
 
-import { RECIPIENT, SENDER, FETCH_RATES_INTERVAL } from '../const/common';
+import { RECIPIENT, SENDER, FETCH_RATES_INTERVAL } from '../utils/constants';
 import type { CurrencyId } from '../flow-typed/common.types';
 
 async function fetchRatesFromApi(base: string, to: string) {
@@ -38,16 +38,19 @@ export const updateExchangeAmount = () => (
 ) => {
   const state = getState();
 
-  const sender = state.pockets.find((item) => item.operationType === SENDER);
-  const recipient = state.pockets.find(
-    (item) => item.operationType === RECIPIENT,
+  const pockets = state.get('pockets');
+
+  const sender = pockets.find((item) => item.get('operationType') === SENDER);
+  const recipient = pockets.find(
+    (item) => item.get('operationType') === RECIPIENT,
   );
 
-  const amount = sender.fieldValue;
-  const base = sender.currency;
-  const to = recipient.currency;
+  const amount = sender.get('fieldValue');
+  const base = sender.get('currency');
+  const to = recipient.get('currency');
 
-  const exchanged = currency(amount).multiply(state.rate.value).value;
+  const exchanged = currency(amount).multiply(state.getIn(['rate', 'value']))
+    .value;
 
   dispatch({
     type: RATE__EXCHANGE,
@@ -84,11 +87,15 @@ export const updateRates = () => async (
 
   const state = getState();
 
-  const base = state.pockets.find((item) => item.operationType === SENDER)
-    .currency;
+  const pockets = state.get('pockets');
 
-  const to = state.pockets.find((item) => item.operationType === RECIPIENT)
-    .currency;
+  const base = pockets
+    .find((item) => item.get('operationType') === SENDER)
+    .get('currency');
+
+  const to = pockets
+    .find((item) => item.get('operationType') === RECIPIENT)
+    .get('currency');
 
   clearInterval(timerId);
 

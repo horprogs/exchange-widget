@@ -6,13 +6,15 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import { createStore, applyMiddleware, compose } from 'redux';
+import { fromJS, List, Map } from 'immutable';
 import 'whatwg-fetch';
 
 import reducers from './reducers';
 
 import './vendor.css';
 import Main from './components/Main/Main';
-import { DISABLED, RECIPIENT, SENDER } from './const/common';
+import { DISABLED, RECIPIENT, SENDER } from './utils/constants';
+import { BalanceRecord, NotificationRecord, PocketRecord, RateRecord, StatusesRecord } from './utils/records';
 
 function render(store) {
   const app = document.getElementById('app');
@@ -36,45 +38,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-  const initialState = {
-    balance: [
-      {
+  const initialState = Map({
+    balance: List([
+      new BalanceRecord({
         id: 'eur',
         amount: 3000,
-      },
-      {
+      }),
+      new BalanceRecord({
         id: 'usd',
         amount: 3000,
-      },
-      {
+      }),
+      new BalanceRecord({
         id: 'gbp',
         amount: 3000,
-      },
-    ],
-    pockets: [
-      {
+      }),
+    ]),
+    pockets: List([
+      new PocketRecord({
         currency: 'eur',
         operationType: SENDER,
         fieldValue: 0,
-      },
-      {
+      }),
+      new PocketRecord({
         currency: 'usd',
         operationType: RECIPIENT,
         fieldValue: 0,
-      },
-    ],
-    rate: {
-      value: 0,
+      }),
+      new PocketRecord({
+        currency: 'usd',
+        operationType: RECIPIENT,
+        fieldValue: 0,
+      }),
+    ]),
+    rate: new RateRecord({
+      value: 1,
       isFetching: true,
-    },
-    notification: {
-      type: null,
-      message: null,
-    },
-    statuses: {
-      exchangeBtn: DISABLED,
-    },
-  };
+    }),
+    notification: new NotificationRecord(),
+    statuses: new StatusesRecord(),
+  });
 
   const store = createStore(
     reducers,

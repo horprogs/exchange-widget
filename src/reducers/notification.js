@@ -1,9 +1,12 @@
 // @flow
 
+import type { RecordOf } from 'immutable';
+
 import {
   NOTIFICATION__SHOW,
   NOTIFICATION__HIDE,
 } from '../actionTypes/notification';
+import { NotificationRecord } from '../utils/records';
 
 type Action = {
   type: string,
@@ -14,23 +17,23 @@ type Action = {
 };
 
 type Notification = {
-  value: number,
-  isFetching: boolean,
+  type: ?string,
+  message: ?string,
 };
 
 export default function notification(
-  state: Notification = {},
+  state: RecordOf<Notification> = new NotificationRecord(),
   { type: actionType, payload }: Action,
 ) {
   switch (actionType) {
     case NOTIFICATION__SHOW: {
       const { type, message } = payload;
 
-      return { type, message };
+      return state.set('type', type).set('message', message);
     }
 
     case NOTIFICATION__HIDE: {
-      return { type: null, message: null };
+      return state.set('type', null).set('message', null);
     }
 
     default:

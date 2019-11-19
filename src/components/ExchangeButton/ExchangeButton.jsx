@@ -6,7 +6,7 @@ import Button from '../UI/Button/Button';
 
 import styles from './ExchangeButton.css';
 
-import { DISABLED, LOADING } from '../../const/common';
+import { DISABLED, LOADING } from '../../utils/constants';
 
 type Props = {
   exchange: () => void,

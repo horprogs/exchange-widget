@@ -6,7 +6,7 @@ import { exchange } from '../actions/balance';
 import ExchangeButton from '../components/ExchangeButton/ExchangeButton';
 
 const mapStateToProps = (state) => ({
-  status: state.statuses.exchangeBtn,
+  status: state.getIn(['statuses', 'exchangeBtn']),
 });
 
 const mapDispatchToProps = {

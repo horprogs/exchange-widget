@@ -1,6 +1,6 @@
 // @flow
 
-import { combineReducers } from 'redux';
+import { combineReducers } from 'redux-immutable';
 import rate from './rate';
 import pockets from './pockets';
 import balance from './balance';

@@ -3,51 +3,60 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import configureStore from 'redux-mock-store';
+import { List, Map } from 'immutable';
 import { Provider } from 'react-redux';
-
 import thunk from 'redux-thunk';
+
 import Pocket from './Pocket';
+import {
+  BalanceRecord,
+  NotificationRecord,
+  PocketRecord,
+  RateRecord,
+  StatusesRecord,
+} from '../../utils/records';
+import { RECIPIENT, SENDER } from '../../utils/constants';
 
 describe('Pocket component', () => {
-  const initialState = {
-    balance: [
-      {
+  const initialState = Map({
+    balance: List([
+      new BalanceRecord({
         id: 'eur',
         amount: 1500,
-      },
-      {
+      }),
+      new BalanceRecord({
         id: 'usd',
         amount: 3000,
-      },
-      {
+      }),
+      new BalanceRecord({
         id: 'gbp',
         amount: 3000,
-      },
-    ],
-    pockets: [
-      {
+      }),
+    ]),
+    pockets: List([
+      new PocketRecord({
         currency: 'eur',
-        operationType: 'sender',
+        operationType: SENDER,
         fieldValue: 0,
-      },
-      {
+      }),
+      new PocketRecord({
         currency: 'usd',
-        operationType: 'recipient',
+        operationType: RECIPIENT,
         fieldValue: 0,
-      },
-    ],
-    rate: {
-      value: 0,
+      }),
+      new PocketRecord({
+        currency: 'usd',
+        operationType: RECIPIENT,
+        fieldValue: 0,
+      }),
+    ]),
+    rate: new RateRecord({
+      value: 1,
       isFetching: true,
-    },
-    notification: {
-      type: null,
-      message: null,
-    },
-    statuses: {
-      exchangeBtn: 'disabled',
-    },
-  };
+    }),
+    notification: new NotificationRecord(),
+    statuses: new StatusesRecord(),
+  });
 
   const mockStore = configureStore([thunk]);
   let store;
@@ -136,7 +145,18 @@ describe('Pocket component', () => {
 
     input.simulate('focus');
 
-    const invalid = ['ab', '0..', '.', '.0.', '100..', '..', '..0', '!/', '-', '+'];
+    const invalid = [
+      'ab',
+      '0..',
+      '.',
+      '.0.',
+      '100..',
+      '..',
+      '..0',
+      '!/',
+      '-',
+      '+',
+    ];
 
     invalid.forEach((value) => {
       input.simulate('change', { target: { value } });

@@ -1,5 +1,8 @@
 // @flow
 
+import { List } from 'immutable';
+import type { RecordOf } from 'immutable';
+
 import {
   POCKETS__CHANGE_POCKET,
   POCKETS__CHANGE_OPERATION,
@@ -7,7 +10,7 @@ import {
 } from '../actionTypes/pockets';
 import { RATE__EXCHANGE } from '../actionTypes/rate';
 import type { CurrencyId, OperationType } from '../flow-typed/common.types';
-import { RECIPIENT, SENDER } from '../const/common';
+import { RECIPIENT, SENDER } from '../utils/constants';
 
 type Action = {
   type: string,
@@ -24,21 +27,22 @@ type PocketItem = {
   currency: CurrencyId,
   operationType: OperationType,
   fieldValue: string,
-}
+};
 
-export default function pockets(state: Array<PocketItem> = [], { type, payload }: Action) {
+export default function pockets(
+  state: List<RecordOf<PocketItem>> = List([]),
+  { type, payload }: Action,
+) {
   switch (type) {
     case POCKETS__CHANGE_POCKET: {
       const { position, pocketId } = payload;
 
-      const newState = [...state];
+      const currentCurrency = state.getIn([position, 'currency']);
 
-      const currentCurrency = newState[position].currency;
+      let newState = state.setIn([position, 'currency'], pocketId);
 
-      newState[position].currency = pocketId;
-
-      if (newState[0].currency === newState[1].currency) {
-        newState[1 - position].currency = currentCurrency;
+      if (newState.getIn([0, 'currency']) === newState.getIn([1, 'currency'])) {
+        newState = newState.setIn([1 - position, 'currency'], currentCurrency);
       }
 
       return newState;
@@ -47,14 +51,16 @@ export default function pockets(state: Array<PocketItem> = [], { type, payload }
     case POCKETS__CHANGE_OPERATION: {
       const { position } = payload;
 
-      const newState = [...state];
+      let newState;
 
       if (position === 0) {
-        newState[0].operationType = SENDER;
-        newState[1].operationType = RECIPIENT;
+        newState = state
+          .setIn([0, 'operationType'], SENDER)
+          .setIn([1, 'operationType'], RECIPIENT);
       } else {
-        newState[1].operationType = SENDER;
-        newState[0].operationType = RECIPIENT;
+        newState = state
+          .setIn([1, 'operationType'], SENDER)
+          .setIn([0, 'operationType'], RECIPIENT);
       }
 
       return newState;
@@ -63,22 +69,15 @@ export default function pockets(state: Array<PocketItem> = [], { type, payload }
     case POCKETS__CHANGE_AMOUNT: {
       const { position, amount } = payload;
 
-      const newState = [...state];
-
-      newState[position].fieldValue = amount;
-
-      return newState;
+      return state.setIn([position, 'fieldValue'], amount);
     }
 
     case RATE__EXCHANGE: {
       const { to, amount } = payload;
 
-      return state.map<PocketItem>((item) => {
-        if (item.currency === to) {
-          return {
-            ...item,
-            fieldValue: amount,
-          };
+      return state.map<RecordOf<PocketItem>>((item) => {
+        if (item.get('currency') === to) {
+          return item.set('fieldValue', amount);
         }
 
         return item;

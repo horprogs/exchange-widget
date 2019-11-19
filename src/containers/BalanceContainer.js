@@ -2,12 +2,16 @@
 
 import { connect } from 'react-redux';
 
-import { POCKETS } from '../const/common';
+import { POCKETS } from '../utils/constants';
 
 import Balance from '../components/Balance/Balance';
 
 const mapStateToProps = (state, props) => {
-  const { amount } = state.balance.find((item) => item.id === props.pocketId);
+  const amount = state
+    .get('balance')
+    .find((item) => item.get('id') === props.pocketId)
+    .get('amount');
+
   const { sign } = POCKETS.find((item) => item.value === props.pocketId);
 
   return {
