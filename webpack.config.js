@@ -26,7 +26,7 @@ const config = {
   },
   devtool: 'source-map',
   output: {
-    path: path.resolve('dist'),
+    path: path.resolve('docs'),
     filename: '[name].[hash].js',
     sourceMapFilename: '[file].map',
   },
