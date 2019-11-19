@@ -10,14 +10,14 @@ import {
 import Pocket from '../components/Pocket/Pocket';
 
 const mapStateToProps = (state, props) => {
-  const pocket = state.pockets[props.position];
+  const pocket = state.getIn(['pockets', props.position]);
 
   return {
-    pocketId: pocket.currency,
-    isRateFetching: state.rate.isFetching,
+    pocketId: pocket.get('currency'),
+    operationType: pocket.get('operationType'),
+    fieldValue: pocket.get('fieldValue'),
+    isRateFetching: state.getIn(['rate', 'isFetching']),
     position: props.position,
-    operationType: pocket.operationType,
-    fieldValue: pocket.fieldValue,
   };
 };
 

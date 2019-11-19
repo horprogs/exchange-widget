@@ -1,8 +1,11 @@
 // @flow
 
+import type { RecordOf } from 'immutable';
+
 import {
   STATUSES__EXCHANGE_BTN,
 } from '../actionTypes/statuses';
+import { StatusesRecord } from '../utils/records';
 
 type Action = {
   type: string,
@@ -16,14 +19,14 @@ type Status = {
 };
 
 export default function statuses(
-  state: Status = {},
+  state: RecordOf<Status> = new StatusesRecord(),
   { type: actionType, payload }: Action,
 ) {
   switch (actionType) {
     case STATUSES__EXCHANGE_BTN: {
       const { status } = payload;
 
-      return { ...state, exchangeBtn: status };
+      return state.set('exchangeBtn', status);
     }
 
     default:

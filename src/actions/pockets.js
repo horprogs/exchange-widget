@@ -11,7 +11,7 @@ import { updateExchangeAmount, updateRates } from './rate';
 import type { CurrencyId } from '../flow-typed/common.types';
 import type { Dispatch } from '../flow-typed/redux.types';
 import { setStatusExchangeBtn } from './statuses';
-import { DISABLED, NORMAL } from '../const/common';
+import { DISABLED, NORMAL } from '../utils/constants';
 import { showNotification } from './notification';
 
 export const changePocket = (position: number, pocketId: CurrencyId) => async (

@@ -7,7 +7,7 @@ import Dropdown from '../UI/Dropdown/Dropdown';
 import BalanceContainer from '../../containers/BalanceContainer';
 import RateContainer from '../../containers/RateContainer';
 
-import { POCKETS, SENDER } from '../../const/common';
+import { POCKETS, SENDER } from '../../utils/constants';
 
 import styles from './Pocket.css';
 import type { CurrencyId, OperationType, ReactObjRef } from '../../flow-typed/common.types';

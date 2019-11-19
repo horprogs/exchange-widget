@@ -9,7 +9,7 @@ import { BALANCE__EXCHANGE } from '../actionTypes/balance';
 import { updateRates } from './rate';
 import { showNotification } from './notification';
 import { setStatusExchangeBtn } from './statuses';
-import { NORMAL, RECIPIENT, SENDER, LOADING } from '../const/common';
+import { NORMAL, RECIPIENT, SENDER, LOADING } from '../utils/constants';
 
 export const exchange = () => async (
   dispatch: Dispatch,

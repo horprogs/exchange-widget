@@ -3,7 +3,7 @@
 import React from 'react';
 import currency from 'currency.js';
 
-import { SENDER } from '../../const/common';
+import { SENDER } from '../../utils/constants';
 import type { OperationType } from '../../flow-typed/common.types';
 
 type Props = {
