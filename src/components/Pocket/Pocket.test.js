@@ -15,7 +15,6 @@ import {
   RateRecord,
   StatusesRecord,
 } from '../../utils/records';
-import { RECIPIENT, SENDER } from '../../utils/constants';
 
 describe('Pocket component', () => {
   const initialState = Map({
@@ -36,18 +35,13 @@ describe('Pocket component', () => {
     pockets: List([
       new PocketRecord({
         currency: 'eur',
-        operationType: SENDER,
         fieldValue: 0,
+        isActive: true,
       }),
       new PocketRecord({
         currency: 'usd',
-        operationType: RECIPIENT,
         fieldValue: 0,
-      }),
-      new PocketRecord({
-        currency: 'usd',
-        operationType: RECIPIENT,
-        fieldValue: 0,
+        isActive: false,
       }),
     ]),
     rate: new RateRecord({

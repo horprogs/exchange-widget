@@ -7,18 +7,16 @@ import Dropdown from '../UI/Dropdown/Dropdown';
 import BalanceContainer from '../../containers/BalanceContainer';
 import RateContainer from '../../containers/RateContainer';
 
-import { POCKETS, SENDER } from '../../utils/constants';
+import { POCKETS } from '../../utils/constants';
 
 import styles from './Pocket.css';
-import type { CurrencyId, OperationType, ReactObjRef } from '../../flow-typed/common.types';
+import type { CurrencyId, ReactObjRef } from '../../flow-typed/common.types';
 
 type Props = {
   changePocket: (number, CurrencyId) => void,
   changeAmount: (number, string) => void,
-  changeOperation: (number) => void,
   position: number,
   pocketId: CurrencyId,
-  operationType: OperationType,
   fieldValue: number,
   isRateFetching: boolean,
 };
@@ -33,9 +31,9 @@ export default class Pocket extends Component<Props> {
   }
 
   componentDidMount() {
-    const { operationType } = this.props;
+    const { position } = this.props;
 
-    if (operationType === SENDER) {
+    if (position === 0) {
       this.inputRef.current.setFocus();
     }
   }
@@ -72,13 +70,8 @@ export default class Pocket extends Component<Props> {
         );
       }
     }
+
     changeAmount(position, formattedAmount);
-  };
-
-  onFocusField = () => {
-    const { changeOperation, position } = this.props;
-
-    changeOperation(position);
   };
 
   getPocketSign() {
@@ -88,9 +81,9 @@ export default class Pocket extends Component<Props> {
   }
 
   renderOperationSign() {
-    const { operationType } = this.props;
+    const { position } = this.props;
 
-    if (operationType === SENDER) {
+    if (position === 0) {
       return (
         <>
           <div className={styles.operationSender}>-</div>
@@ -108,7 +101,7 @@ export default class Pocket extends Component<Props> {
   }
 
   render() {
-    const { pocketId, fieldValue, isRateFetching, operationType } = this.props;
+    const { pocketId, fieldValue, isRateFetching, position } = this.props;
 
     return (
       <div className={styles.wrap}>
@@ -119,7 +112,6 @@ export default class Pocket extends Component<Props> {
           className={styles.input}
           value={String(fieldValue)}
           onChange={this.onChangeAmount}
-          onFocus={this.onFocusField}
           ref={this.inputRef}
         />
         <Dropdown
@@ -131,7 +123,7 @@ export default class Pocket extends Component<Props> {
         <BalanceContainer pocketId={pocketId} />
 
         <div className={styles.rate}>
-          {!isRateFetching && <RateContainer operationType={operationType} />}
+          {!isRateFetching && <RateContainer position={position} />}
         </div>
       </div>
     );

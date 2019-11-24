@@ -5,12 +5,10 @@ import type { RecordOf } from 'immutable';
 
 import {
   POCKETS__CHANGE_POCKET,
-  POCKETS__CHANGE_OPERATION,
   POCKETS__CHANGE_AMOUNT,
 } from '../actionTypes/pockets';
 import { RATE__EXCHANGE } from '../actionTypes/rate';
-import type { CurrencyId, OperationType } from '../flow-typed/common.types';
-import { RECIPIENT, SENDER } from '../utils/constants';
+import type { CurrencyId } from '../flow-typed/common.types';
 
 type Action = {
   type: string,
@@ -25,8 +23,8 @@ type Action = {
 
 type PocketItem = {
   currency: CurrencyId,
-  operationType: OperationType,
   fieldValue: string,
+  isActive: boolean,
 };
 
 export default function pockets(
@@ -48,28 +46,13 @@ export default function pockets(
       return newState;
     }
 
-    case POCKETS__CHANGE_OPERATION: {
-      const { position } = payload;
-
-      let newState;
-
-      if (position === 0) {
-        newState = state
-          .setIn([0, 'operationType'], SENDER)
-          .setIn([1, 'operationType'], RECIPIENT);
-      } else {
-        newState = state
-          .setIn([1, 'operationType'], SENDER)
-          .setIn([0, 'operationType'], RECIPIENT);
-      }
-
-      return newState;
-    }
-
     case POCKETS__CHANGE_AMOUNT: {
       const { position, amount } = payload;
 
-      return state.setIn([position, 'fieldValue'], amount);
+      return state
+        .setIn([1 - position, 'isActive'], false)
+        .setIn([position, 'fieldValue'], amount)
+        .setIn([position, 'isActive'], true);
     }
 
     case RATE__EXCHANGE: {

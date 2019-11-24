@@ -6,14 +6,13 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import { createStore, applyMiddleware, compose } from 'redux';
-import { fromJS, List, Map } from 'immutable';
+import { List, Map } from 'immutable';
 import 'whatwg-fetch';
 
 import reducers from './reducers';
 
 import './vendor.css';
-import Main from './components/Main/Main';
-import { DISABLED, RECIPIENT, SENDER } from './utils/constants';
+import Main from './containers/MainContainer';
 import { BalanceRecord, NotificationRecord, PocketRecord, RateRecord, StatusesRecord } from './utils/records';
 
 function render(store) {
@@ -56,18 +55,13 @@ document.addEventListener('DOMContentLoaded', () => {
     pockets: List([
       new PocketRecord({
         currency: 'eur',
-        operationType: SENDER,
         fieldValue: 0,
+        isActive: true,
       }),
       new PocketRecord({
         currency: 'usd',
-        operationType: RECIPIENT,
         fieldValue: 0,
-      }),
-      new PocketRecord({
-        currency: 'usd',
-        operationType: RECIPIENT,
-        fieldValue: 0,
+        isActive: false,
       }),
     ]),
     rate: new RateRecord({
