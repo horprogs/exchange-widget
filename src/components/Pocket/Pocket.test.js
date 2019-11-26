@@ -86,35 +86,6 @@ describe('Pocket component', () => {
     );
   });
 
-  it('should change operation type', () => {
-    const changePocket = jest.fn();
-    const changeAmount = jest.fn();
-    const changeOperation = jest.fn();
-
-    const container = mount(
-      <Provider store={store}>
-        <Pocket
-          changePocket={changePocket}
-          changeAmount={changeAmount}
-          changeOperation={changeOperation}
-          position={0}
-          pocketId="usd"
-          operationType="recipient"
-          fieldValue={0}
-          isRateFetching
-        />
-      </Provider>,
-    );
-
-    expect(container.find('.operationRecipient').text()).toBe('+');
-
-    const input = container.find('input');
-
-    input.simulate('focus');
-
-    expect(changeOperation).toHaveBeenCalledWith(0);
-  });
-
   it('should validate input', () => {
     const changePocket = jest.fn();
     const changeAmount = jest.fn();

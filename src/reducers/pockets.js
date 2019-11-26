@@ -6,8 +6,9 @@ import type { RecordOf } from 'immutable';
 import {
   POCKETS__CHANGE_POCKET,
   POCKETS__CHANGE_AMOUNT,
+  POCKETS__UPDATE_EXCHANGED,
 } from '../actionTypes/pockets';
-import { RATE__EXCHANGE } from '../actionTypes/rate';
+
 import type { CurrencyId } from '../flow-typed/common.types';
 
 type Action = {
@@ -55,7 +56,7 @@ export default function pockets(
         .setIn([position, 'isActive'], true);
     }
 
-    case RATE__EXCHANGE: {
+    case POCKETS__UPDATE_EXCHANGED: {
       const { to, amount } = payload;
 
       return state.map<RecordOf<PocketItem>>((item) => {

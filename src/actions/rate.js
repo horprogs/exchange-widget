@@ -4,11 +4,10 @@ import currency from 'currency.js';
 
 import type { Dispatch, GetState } from '../flow-typed/redux.types';
 
-import {
-  RATE__GET_RATE,
-  RATE__EXCHANGE,
-  RATE__SET_FETCHING,
-} from '../actionTypes/rate';
+import { RATE__GET_RATE, RATE__SET_FETCHING } from '../actionTypes/rate';
+
+import { POCKETS__UPDATE_EXCHANGED } from '../actionTypes/pockets';
+
 import { showNotification } from './notification';
 
 import { FETCH_RATES_INTERVAL } from '../utils/constants';
@@ -45,7 +44,6 @@ export const updateExchangeAmount = () => (
   const recipient = pockets.find((item) => !item.get('isActive'));
 
   const amount = sender.get('fieldValue');
-  const base = sender.get('currency');
   const to = recipient.get('currency');
 
   let exchanged;
@@ -57,10 +55,9 @@ export const updateExchangeAmount = () => (
   }
 
   dispatch({
-    type: RATE__EXCHANGE,
+    type: POCKETS__UPDATE_EXCHANGED,
     payload: {
       amount: exchanged,
-      base,
       to,
     },
   });
