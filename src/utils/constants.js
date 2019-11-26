@@ -20,7 +20,4 @@ export const LOADING = 'loading';
 export const DISABLED = 'disabled';
 export const NORMAL = 'NORMAL';
 
-export const SENDER = 'sender';
-export const RECIPIENT = 'recipient';
-
 export const FETCH_RATES_INTERVAL = 10000;

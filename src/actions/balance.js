@@ -9,7 +9,7 @@ import { BALANCE__EXCHANGE } from '../actionTypes/balance';
 import { updateRates } from './rate';
 import { showNotification } from './notification';
 import { setStatusExchangeBtn } from './statuses';
-import { NORMAL, RECIPIENT, SENDER, LOADING } from '../utils/constants';
+import { NORMAL, LOADING } from '../utils/constants';
 
 export const exchange = () => async (
   dispatch: Dispatch,
@@ -21,13 +21,10 @@ export const exchange = () => async (
     await dispatch(updateRates());
 
     const state = getState();
+    const pockets = state.get('pockets');
 
-    const sender = state.get('pockets').find(
-      (item) => item.get('operationType') === SENDER,
-    );
-    const recipient = state.get('pockets').find(
-      (item) => item.get('operationType') === RECIPIENT,
-    );
+    const sender = pockets.get(0);
+    const recipient = pockets.get(1);
 
     const base = sender.get('currency');
     const receivedAmount = recipient.get('fieldValue');

@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import Pocket from '../../containers/PocketContainer';
 import ExchangeContainer from '../../containers/ExchangeContainer';
@@ -8,7 +8,17 @@ import NotificationContainer from '../../containers/NotificationContainer';
 
 import styles from './Main.css';
 
-export default function Main() {
+type Props = {
+  initRates: () => void,
+}
+
+export default function Main(props: Props) {
+  const { initRates } = props;
+
+  useEffect(() => {
+    initRates();
+  }, []);
+
   return (
     <>
       <div className={styles.wrap}>

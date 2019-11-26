@@ -15,7 +15,6 @@ import {
   RateRecord,
   StatusesRecord,
 } from '../../utils/records';
-import { RECIPIENT, SENDER } from '../../utils/constants';
 
 describe('Pocket component', () => {
   const initialState = Map({
@@ -36,18 +35,13 @@ describe('Pocket component', () => {
     pockets: List([
       new PocketRecord({
         currency: 'eur',
-        operationType: SENDER,
         fieldValue: 0,
+        isActive: true,
       }),
       new PocketRecord({
         currency: 'usd',
-        operationType: RECIPIENT,
         fieldValue: 0,
-      }),
-      new PocketRecord({
-        currency: 'usd',
-        operationType: RECIPIENT,
-        fieldValue: 0,
+        isActive: false,
       }),
     ]),
     rate: new RateRecord({
@@ -90,35 +84,6 @@ describe('Pocket component', () => {
     expect(container.find('[data-test="balance"]').text()).toBe(
       'You have 1500€',
     );
-  });
-
-  it('should change operation type', () => {
-    const changePocket = jest.fn();
-    const changeAmount = jest.fn();
-    const changeOperation = jest.fn();
-
-    const container = mount(
-      <Provider store={store}>
-        <Pocket
-          changePocket={changePocket}
-          changeAmount={changeAmount}
-          changeOperation={changeOperation}
-          position={0}
-          pocketId="usd"
-          operationType="recipient"
-          fieldValue={0}
-          isRateFetching
-        />
-      </Provider>,
-    );
-
-    expect(container.find('.operationRecipient').text()).toBe('+');
-
-    const input = container.find('input');
-
-    input.simulate('focus');
-
-    expect(changeOperation).toHaveBeenCalledWith(0);
   });
 
   it('should validate input', () => {

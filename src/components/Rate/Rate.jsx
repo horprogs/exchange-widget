@@ -3,20 +3,17 @@
 import React from 'react';
 import currency from 'currency.js';
 
-import { SENDER } from '../../utils/constants';
-import type { OperationType } from '../../flow-typed/common.types';
-
 type Props = {
   recipientSign: string,
   senderSign: string,
   rate: number,
-  operationType: OperationType,
+  position: number,
 };
 
 export default function Rate(props: Props) {
-  const { recipientSign, senderSign, rate, operationType } = props;
+  const { recipientSign, senderSign, rate, position } = props;
 
-  if (operationType === SENDER) {
+  if (position === 0) {
     return (
       <div>
         1{senderSign} = {currency(rate).value}

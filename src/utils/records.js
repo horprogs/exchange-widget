@@ -8,7 +8,7 @@ export const BalanceRecord = new Record({
 
 export const PocketRecord = new Record({
   currency: null,
-  operationType: null,
+  isActive: false,
   fieldValue: 0,
 });
 

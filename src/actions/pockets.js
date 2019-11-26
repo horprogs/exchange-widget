@@ -4,7 +4,6 @@ import currency from 'currency.js';
 
 import {
   POCKETS__CHANGE_POCKET,
-  POCKETS__CHANGE_OPERATION,
   POCKETS__CHANGE_AMOUNT,
 } from '../actionTypes/pockets';
 import { updateExchangeAmount, updateRates } from './rate';
@@ -22,28 +21,6 @@ export const changePocket = (position: number, pocketId: CurrencyId) => async (
     payload: {
       position,
       pocketId,
-    },
-  });
-
-  try {
-    await dispatch(updateRates());
-  } catch (e) {
-    dispatch(
-      showNotification(
-        'Cannot fetch exchange rates. Please try later.',
-        'error',
-      ),
-    );
-  }
-};
-
-export const changeOperation = (position: number) => async (
-  dispatch: Dispatch,
-) => {
-  dispatch({
-    type: POCKETS__CHANGE_OPERATION,
-    payload: {
-      position,
     },
   });
 

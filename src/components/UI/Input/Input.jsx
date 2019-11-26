@@ -10,17 +10,18 @@ import type { ReactObjRef } from '../../../flow-typed/common.types';
 type Props = {
   type?: string,
   onChange: (string) => void,
-  onFocus: () => void,
+  onFocus?: () => void,
   className: string,
   suffix: string,
   value: string,
-}
+};
 
 export default class Input extends Component<Props> {
   inputRef: ReactObjRef;
 
   static defaultProps = {
     type: 'text',
+    onFocus: () => {},
   };
 
   constructor() {
