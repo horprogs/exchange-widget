@@ -63,7 +63,7 @@
     "jest": "^24.9.0",
     "jest-fetch-mock": "^2.1.2",
     "mini-css-extract-plugin": "^0.8.0",
-    "node-sass": "^4.5.3",
+    "node-sass": "^7.0.0",
     "postcss-loader": "^2.0.8",
     "prettier": "^1.14.3",
     "redux-mock-store": "^1.5.3",
